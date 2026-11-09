@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Aptitude Test Results – CareerVerse AI{% endblock %}
+{% block breadcrumb %}Aptitude Score & Analysis{% endblock %}
+
+{% block content %}
+<div style="max-width: 750px; margin: 40px auto; text-align: center;">
+
+    <!-- RESULT HERO CARD -->
+    <div class="card" style="padding: 48px 32px;">
+        <div style="font-size: 3.5rem; margin-bottom: 12px;">
+            {% if accuracy >= 70 %}🏆{% elif accuracy >= 40 %}🎯{% else %}📚{% endif %}
+        </div>
+
+        <span class="badge {% if accuracy >= 70 %}badge-success{% else %}badge-warning{% endif %}" style="font-size: 0.9rem; padding: 6px 16px;">
+            {{ category|default:"Aptitude" }} Test Completed
+        </span>
+
+        <h1 style="font-size: 2.5rem; margin: 16px 0 8px;">
+            Your Score: <span class="text-gradient">{{ score }} / {{ total|default:"3" }}</span>
+        </h1>
+
+        <p style="font-size: 1.15rem; color: var(--text-secondary); margin-bottom: 24px;">
+            Accuracy Rating: <strong>{{ accuracy|default:"100" }}%</strong>
+        </p>
+
+        <!-- PERFORMANCE ADVICE -->
+        <div style="background: var(--bg-subtle); border-radius: var(--radius-md); padding: 20px; text-align: left; margin-bottom: 32px; border: 1px solid var(--border-color);">
+            <h4 style="margin-bottom: 8px; color: var(--text-primary);">📊 Performance Feedback:</h4>
+            {% if accuracy >= 80 %}
+                <p style="margin: 0; font-size: 0.95rem; color: var(--success);">
+                    <strong>Outstanding!</strong> You are well prepared for the quantitative & logical screening rounds of top recruiters like TCS Digital, Amazon, and Infosys SP.
+                </p>
+            {% elif accuracy >= 50 %}
+                <p style="margin: 0; font-size: 0.95rem; color: var(--warning);">
+                    <strong>Good Foundation!</strong> You scored solidly. With a bit more practice on speed calculation and shortcut techniques, you will easily clear Tier-1 cutoffs.
+                </p>
+            {% else %}
+                <p style="margin: 0; font-size: 0.95rem; color: var(--danger);">
+                    <strong>Needs Practice.</strong> Don't worry—aptitude is a muscle that strengthens with regular drills. Review the step-by-step explanations and retake the test.
+                </p>
+            {% endif %}
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+            <a href="{% url 'aptitude' %}" class="btn btn-outline btn-lg">🔄 Retake Practice Test</a>
+            <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg">Go to Dashboard →</a>
+            <a href="{% url 'coding' %}" class="btn btn-success btn-lg">Solve Coding Challenges →</a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

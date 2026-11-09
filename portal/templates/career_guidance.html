@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Career Guidance & Roadmap – CareerVerse AI{% endblock %}
+{% block breadcrumb %}AI Career Guidance{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+
+    <!-- HEADER -->
+    <div style="text-align: center; margin-bottom: 32px;">
+        <span class="badge badge-primary">AI Career Counselor</span>
+        <h1 style="font-size: 2.3rem; margin-top: 10px;">Find Your Ideal Career & Roadmap</h1>
+        <p>CareerVerse AI analyzes your degree, academic standing, existing skills, and passions to formulate a tailored
+            5-step roadmap.</p>
+    </div>
+
+    <!-- PERSONALIZED CAREER PATH RECOMMENDATIONS (FEATURE 6) -->
+    {% if personalized_tracks %}
+        <div class="card" style="margin-bottom: 32px; border-color: rgba(99, 102, 241, 0.35); background: linear-gradient(135deg, rgba(79, 70, 229, 0.08) 0%, rgba(16, 185, 129, 0.05) 100%);">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div class="card-title">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    <span>Recommended IT Career Paths (Personalized For You)</span>
+                </div>
+                <span class="badge badge-success">Analyzed from your profile & performance</span>
+            </div>
+
+            <p style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 20px;">
+                Based on your department (<strong>{{ profile.department }}</strong>), CGPA (<strong>{{ profile.cgpa }}</strong>), skills, and <strong>{{ solved_count }}</strong> coding challenges solved:
+            </p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 18px;">
+                {% for track in personalized_tracks %}
+                    <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                                <div>
+                                    <h3 style="font-size: 1.25rem; margin: 0 0 4px; color: var(--text-primary);">{{ track.title }}</h3>
+                                    <span class="badge badge-subtle">{{ track.badge }}</span>
+                                </div>
+                                <span class="badge {% if track.match_percentage >= 80 %}badge-success{% elif track.match_percentage >= 65 %}badge-primary{% else %}badge-warning{% endif %}" style="font-size: 0.9rem; font-weight: 800;">
+                                    {{ track.match_percentage }}% Match
+                                </span>
+                            </div>
+
+                            <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 14px;">
+                                {{ track.description }}
+                            </p>
+
+                            <!-- Compensation & Tech Stack -->
+                            <div style="background: var(--bg-subtle); padding: 10px 12px; border-radius: var(--radius-sm); margin-bottom: 14px; font-size: 0.85rem;">
+                                <div style="margin-bottom: 4px;">💰 <strong>Fresher Salary Range:</strong> <span style="color: #10b981; font-weight: 700;">{{ track.salary }}</span></div>
+                                <div>⚡ <strong>Core Technologies:</strong> {{ track.recommended_tech|join:", " }}</div>
+                            </div>
+
+                            <!-- Skill Gap -->
+                            <div style="margin-bottom: 14px;">
+                                <strong style="font-size: 0.82rem; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 6px;">Skill Gaps To Bridge:</strong>
+                                <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                    {% for gap in track.skill_gap %}
+                                        <span class="badge badge-warning" style="font-size: 0.75rem;">+ {{ gap }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- Suggested Projects -->
+                            <div style="margin-bottom: 16px;">
+                                <strong style="font-size: 0.82rem; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 6px;">Recommended Portfolio Projects:</strong>
+                                <ul style="margin: 0; padding-left: 18px; font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5;">
+                                    {% for proj in track.projects %}
+                                        <li>{{ proj }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Action Link -->
+                        <div style="border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 10px;">
+                            <a href="{% url 'coding' %}" class="btn btn-outline btn-sm btn-block">
+                                Start Learning Track on CareerVerse →
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- MAIN FORM CARD -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                </svg>
+                <span>Student Career Profile</span>
+            </div>
+            {% if profile %}
+            <button type="button" class="btn btn-outline btn-sm" id="autofill-btn">
+                ⚡ Auto-Fill From Profile
+            </button>
+            {% endif %}
+        </div>
+
+        <form method="POST" id="career-form">
+            {% csrf_token %}
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label class="form-label">Degree / Major <span style="color:var(--danger)">*</span></label>
+                    <input type="text" name="degree" id="input-degree" class="form-control"
+                        placeholder="e.g. B.Tech Computer Science & Engineering"
+                        value="{{ profile.department|default:'' }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">CGPA / Percentage <span style="color:var(--danger)">*</span></label>
+                    <input type="text" name="cgpa" id="input-cgpa" class="form-control" placeholder="e.g. 8.45 or 85%"
+                        value="{{ profile.cgpa|default:'' }}" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Technical & Soft Skills You Currently Have</label>
+                <input type="text" name="skills" id="input-skills" class="form-control"
+                    placeholder="e.g. Python, SQL, Git, Basic C++, Problem Solving, React"
+                    value="{{ profile.skills|default:'' }}">
+                <span class="form-help">Separate skills with commas. The AI uses this to calculate your Skill Gap
+                    Analysis.</span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Your Passions & Interests</label>
+                <textarea name="interests" id="input-interests" class="form-control" rows="3"
+                    placeholder="e.g. Artificial Intelligence, Cloud Computing, Backend API Development, Open Source, Designing Systems">{{ profile.interests|default:'' }}</textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg btn-block" id="submit-btn" style="margin-top: 10px;">
+                <span>🤖 Generate AI Career Recommendation & Roadmap</span>
+            </button>
+        </form>
+    </div>
+
+    <!-- WHAT YOU RECEIVE CARDS -->
+    <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; margin-top: 32px;">
+        <div class="card" style="padding: 18px;">
+            <div style="font-size: 1.5rem; margin-bottom: 8px;">🎯</div>
+            <strong style="color: var(--text-primary); display: block; margin-bottom: 4px;">Role & Salary Fit</strong>
+            <p style="font-size: 0.85rem; margin: 0;">Match percentage, market hiring trends, and average fresher
+                compensation packages.</p>
+        </div>
+
+        <div class="card" style="padding: 18px;">
+            <div style="font-size: 1.5rem; margin-bottom: 8px;">🔍</div>
+            <strong style="color: var(--text-primary); display: block; margin-bottom: 4px;">Skill Gap Matrix</strong>
+            <p style="font-size: 0.85rem; margin: 0;">Direct comparison of what you have vs. the exact high-demand tools
+                companies test for.</p>
+        </div>
+
+        <div class="card" style="padding: 18px;">
+            <div style="font-size: 1.5rem; margin-bottom: 8px;">🗺️</div>
+            <strong style="color: var(--text-primary); display: block; margin-bottom: 4px;">5-Phase Roadmap</strong>
+            <p style="font-size: 0.85rem; margin: 0;">Step-by-step learning path from fundamentals to capstone projects
+                and placement drills.</p>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const autofillBtn = document.getElementById('autofill-btn');
+    if (autofillBtn) {
+        autofillBtn.addEventListener('click', () => {
+            document.getElementById('input-degree').value = "{{ profile.department|default:'' }}";
+            document.getElementById('input-cgpa').value = "{{ profile.cgpa|default:'' }}";
+            document.getElementById('input-skills').value = "{{ profile.skills|default:'' }}";
+            document.getElementById('input-interests').value = "{{ profile.interests|default:'' }}";
+        });
+    }
+
+    const form = document.getElementById('career-form');
+    const submitBtn = document.getElementById('submit-btn');
+    form.addEventListener('submit', () => {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<span>⏳ CareerVerse AI is analyzing market trends & generating roadmap...</span>`;
+    });
+</script>
+{% endblock %}

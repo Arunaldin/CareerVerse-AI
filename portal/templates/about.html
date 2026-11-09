@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}About CareerVerse AI – Placement Portal{% endblock %}
+{% block breadcrumb %}About Us{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+
+    <div style="text-align: center; margin-bottom: 36px;">
+        <span class="badge badge-primary">Our Mission</span>
+        <h1 style="font-size: 2.4rem; margin-top: 10px;">Empowering Students for Tomorrow's Careers</h1>
+        <p style="font-size: 1.1rem; color: var(--text-secondary); max-width: 700px; margin: 12px auto 0;">
+            CareerVerse AI is an intelligent placement prep and career guidance ecosystem built to bridge the gap between college curricula and top tech company hiring bars.
+        </p>
+    </div>
+
+    <div class="card" style="padding: 32px; margin-bottom: 24px;">
+        <h2 style="font-size: 1.5rem; margin-bottom: 14px; color: var(--primary);">Why CareerVerse AI?</h2>
+        <p style="font-size: 1rem; line-height: 1.7; color: var(--text-secondary);">
+            Campus recruitment can be overwhelming. Students juggle aptitude exams, algorithmic coding assessments, company-specific test formats, behavioral STAR interviews, and ATS-friendly resume formatting. CareerVerse AI unifies all these critical preparation pillars into a single, polished platform.
+        </p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-bottom: 32px;">
+        <div class="card">
+            <h3 style="font-size: 1.2rem; margin-bottom: 8px;">🤖 AI Guidance</h3>
+            <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                Smart skill gap analysis and 5-phase career roadmaps formulated directly from your academic profile.
+            </p>
+        </div>
+        <div class="card">
+            <h3 style="font-size: 1.2rem; margin-bottom: 8px;">💻 Python Code Runner</h3>
+            <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                Test your code live against test cases with real execution output and timing metrics.
+            </p>
+        </div>
+        <div class="card">
+            <h3 style="font-size: 1.2rem; margin-bottom: 8px;">🎙️ Voice Mock Interview</h3>
+            <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                Speak your answers aloud and receive instantaneous, constructive AI feedback out of 10.
+            </p>
+        </div>
+    </div>
+
+    <div class="card" style="text-align: center; padding: 36px; background: var(--primary-light); border-color: rgba(99, 102, 241, 0.3);">
+        <h2 style="margin-bottom: 8px; color: var(--primary);">Ready to Supercharge Your Placement Prep?</h2>
+        <p style="margin-bottom: 20px;">Join CareerVerse AI and get recruitment-ready today.</p>
+        <a href="{% url 'register' %}" class="btn btn-primary btn-lg">Get Started Free →</a>
+    </div>
+
+</div>
+{% endblock %}

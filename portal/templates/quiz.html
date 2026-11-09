@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}Placement Foundation Quiz – CareerVerse AI{% endblock %}
+{% block breadcrumb %}Placement Quiz{% endblock %}
+
+{% block content %}
+<div class="quiz-container">
+
+    <div style="text-align: center; margin-bottom: 32px;">
+        <span class="badge badge-primary">Skill Assessment</span>
+        <h1 style="font-size: 2.2rem; margin-top: 10px;">Foundation Placement Quiz</h1>
+        <p>10 core computer science and programming questions to test your initial readiness.</p>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="question-card">
+            <span class="badge badge-subtle">Q1 • Math & Logic</span>
+            <h3 style="margin-top: 10px;">What is 2 + 3?</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <label class="option-label"><input type="radio" name="q1" value="4"> <span>A. 4</span></label>
+                <label class="option-label"><input type="radio" name="q1" value="5"> <span>B. 5</span></label>
+                <label class="option-label"><input type="radio" name="q1" value="6"> <span>C. 6</span></label>
+                <label class="option-label"><input type="radio" name="q1" value="7"> <span>D. 7</span></label>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <span class="badge badge-subtle">Q2 • Programming</span>
+            <h3 style="margin-top: 10px;">Which language is commonly used for Machine Learning and AI?</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <label class="option-label"><input type="radio" name="q2" value="Python"> <span>A. Python</span></label>
+                <label class="option-label"><input type="radio" name="q2" value="HTML"> <span>B. HTML</span></label>
+                <label class="option-label"><input type="radio" name="q2" value="CSS"> <span>C. CSS</span></label>
+                <label class="option-label"><input type="radio" name="q2" value="SQL"> <span>D. SQL</span></label>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <span class="badge badge-subtle">Q3 • Variables</span>
+            <h3 style="margin-top: 10px;">Which of the following is a valid Python variable name?</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <label class="option-label"><input type="radio" name="q3" value="a"> <span>A. _variable_name</span></label>
+                <label class="option-label"><input type="radio" name="q3" value="b"> <span>B. 2variable</span></label>
+                <label class="option-label"><input type="radio" name="q3" value="c"> <span>C. my-var</span></label>
+                <label class="option-label"><input type="radio" name="q3" value="d"> <span>D. class</span></label>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <span class="badge badge-subtle">Q4 • Web Technologies</span>
+            <h3 style="margin-top: 10px;">Which technology is used to style web pages?</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <label class="option-label"><input type="radio" name="q4" value="HTML"> <span>A. HTML</span></label>
+                <label class="option-label"><input type="radio" name="q4" value="CSS"> <span>B. CSS</span></label>
+                <label class="option-label"><input type="radio" name="q4" value="Python"> <span>C. Python</span></label>
+                <label class="option-label"><input type="radio" name="q4" value="PHP"> <span>D. PHP</span></label>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <span class="badge badge-subtle">Q5 • Databases</span>
+            <h3 style="margin-top: 10px;">Which of the following is a lightweight relational database?</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <label class="option-label"><input type="radio" name="q5" value="SQLite"> <span>A. SQLite</span></label>
+                <label class="option-label"><input type="radio" name="q5" value="CSS"> <span>B. CSS</span></label>
+                <label class="option-label"><input type="radio" name="q5" value="HTML"> <span>C. HTML</span></label>
+                <label class="option-label"><input type="radio" name="q5" value="React"> <span>D. React</span></label>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <span class="badge badge-subtle">Q6 • Python Syntax</span>
+            <h3 style="margin-top: 10px;">Which symbol is used for single-line comments in Python?</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <label class="option-label"><input type="radio" name="q6" value="//"> <span>A. //</span></label>
+                <label class="option-label"><input type="radio" name="q6" value="/*"> <span>B. /*</span></label>
+                <label class="option-label"><input type="radio" name="q6" value="#"> <span>C. #</span></label>
+                <label class="option-label"><input type="radio" name="q6" value="--"> <span>D. --</span></label>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <span class="badge badge-subtle">Q7 • SQL Commands</span>
+            <h3 style="margin-top: 10px;">Which SQL statement is used to fetch data from a database?</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <label class="option-label"><input type="radio" name="q7" value="GET"> <span>A. GET</span></label>
+                <label class="option-label"><input type="radio" name="q7" value="OPEN"> <span>B. OPEN</span></label>
+                <label class="option-label"><input type="radio" name="q7" value="SELECT"> <span>C. SELECT</span></label>
+                <label class="option-label"><input type="radio" name="q7" value="EXTRACT"> <span>D. EXTRACT</span></label>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <span class="badge badge-subtle">Q8 • Acronyms</span>
+            <h3 style="margin-top: 10px;">What does HTML stand for?</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <label class="option-label"><input type="radio" name="q8" value="Hyper Text Markup Language"> <span>A. Hyper Text Markup Language</span></label>
+                <label class="option-label"><input type="radio" name="q8" value="High Text Machine Language"> <span>B. High Text Machine Language</span></label>
+                <label class="option-label"><input type="radio" name="q8" value="Hyper Tool Multi Language"> <span>C. Hyper Tool Multi Language</span></label>
+                <label class="option-label"><input type="radio" name="q8" value="None"> <span>D. None of these</span></label>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <span class="badge badge-subtle">Q9 • Python Keywords</span>
+            <h3 style="margin-top: 10px;">Which keyword is used to define a function in Python?</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <label class="option-label"><input type="radio" name="q9" value="function"> <span>A. function</span></label>
+                <label class="option-label"><input type="radio" name="q9" value="def"> <span>B. def</span></label>
+                <label class="option-label"><input type="radio" name="q9" value="fun"> <span>C. fun</span></label>
+                <label class="option-label"><input type="radio" name="q9" value="define"> <span>D. define</span></label>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <span class="badge badge-subtle">Q10 • Data Structures</span>
+            <h3 style="margin-top: 10px;">Which data type in Python is mutable and ordered?</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <label class="option-label"><input type="radio" name="q10" value="Tuple"> <span>A. Tuple</span></label>
+                <label class="option-label"><input type="radio" name="q10" value="String"> <span>B. String</span></label>
+                <label class="option-label"><input type="radio" name="q10" value="List"> <span>C. List</span></label>
+                <label class="option-label"><input type="radio" name="q10" value="Integer"> <span>D. Integer</span></label>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 28px;">
+            <button type="submit" class="btn btn-primary btn-lg">Submit Foundation Quiz 🚀</button>
+        </div>
+    </form>
+
+</div>
+{% endblock %}

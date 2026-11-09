@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ name }} – Professional Resume – CareerVerse AI{% endblock %}
+{% block breadcrumb %}Generated Resume{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+
+    <!-- TOP ACTION BAR -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;" class="no-print">
+        <div>
+            <span class="badge badge-success">✓ Resume Generated & Saved</span>
+            <h1 style="font-size: 1.8rem; margin-top: 6px;">{{ name }}'s Resume</h1>
+        </div>
+
+        <div style="display: flex; gap: 12px;">
+            <a href="{% url 'resume' %}" class="btn btn-outline">← Edit Resume</a>
+            <button onclick="window.print()" class="btn btn-primary">📥 Download as PDF</button>
+        </div>
+    </div>
+
+    <!-- CLEAN A4 PRINT READY CONTAINER -->
+    <div class="resume-preview-sheet" style="background: white; color: #1e293b; padding: 48px; border-radius: 12px; box-shadow: var(--shadow-md);">
+        
+        <!-- HEADER -->
+        <div style="border-bottom: 2px solid #2563eb; padding-bottom: 20px; margin-bottom: 24px;">
+            <h1 style="color: #0f172a; font-size: 2.2rem; font-weight: 800; margin: 0 0 8px;">
+                {{ name }}
+            </h1>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap; color: #475569; font-size: 0.95rem;">
+                <span>📧 {{ email }}</span>
+                <span>📱 {{ phone }}</span>
+                <span>🌐 CareerVerse Verified Student</span>
+            </div>
+        </div>
+
+        {% if objective %}
+        <!-- OBJECTIVE -->
+        <div style="margin-bottom: 22px;">
+            <h3 style="color: #2563eb; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; margin-bottom: 8px;">
+                Career Objective
+            </h3>
+            <p style="font-size: 0.95rem; color: #334155; line-height: 1.6; margin: 0;">
+                {{ objective }}
+            </p>
+        </div>
+        {% endif %}
+
+        {% if education %}
+        <!-- EDUCATION -->
+        <div style="margin-bottom: 22px;">
+            <h3 style="color: #2563eb; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; margin-bottom: 8px;">
+                Education & Academics
+            </h3>
+            <p style="font-size: 0.95rem; color: #334155; line-height: 1.6; margin: 0; white-space: pre-line;">
+                {{ education }}
+            </p>
+        </div>
+        {% endif %}
+
+        {% if skills %}
+        <!-- SKILLS -->
+        <div style="margin-bottom: 22px;">
+            <h3 style="color: #2563eb; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; margin-bottom: 8px;">
+                Technical & Core Skills
+            </h3>
+            <p style="font-size: 0.95rem; color: #334155; line-height: 1.6; margin: 0;">
+                {{ skills }}
+            </p>
+        </div>
+        {% endif %}
+
+        {% if projects %}
+        <!-- PROJECTS -->
+        <div style="margin-bottom: 22px;">
+            <h3 style="color: #2563eb; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; margin-bottom: 8px;">
+                Key Projects & Development
+            </h3>
+            <p style="font-size: 0.95rem; color: #334155; line-height: 1.6; margin: 0; white-space: pre-line;">
+                {{ projects }}
+            </p>
+        </div>
+        {% endif %}
+
+        {% if experience %}
+        <!-- EXPERIENCE -->
+        <div style="margin-bottom: 22px;">
+            <h3 style="color: #2563eb; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; margin-bottom: 8px;">
+                Internships & Work Experience
+            </h3>
+            <p style="font-size: 0.95rem; color: #334155; line-height: 1.6; margin: 0; white-space: pre-line;">
+                {{ experience }}
+            </p>
+        </div>
+        {% endif %}
+
+        {% if certifications %}
+        <!-- CERTIFICATIONS -->
+        <div>
+            <h3 style="color: #2563eb; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; margin-bottom: 8px;">
+                Certifications & Achievements
+            </h3>
+            <p style="font-size: 0.95rem; color: #334155; line-height: 1.6; margin: 0;">
+                {{ certifications }}
+            </p>
+        </div>
+        {% endif %}
+
+    </div>
+
+</div>
+{% endblock %}

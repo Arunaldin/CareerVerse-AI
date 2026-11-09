@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Interview Pack for {{ role }} @ {{ company }} – CareerVerse AI{% endblock %}
+{% block breadcrumb %}AI Interview Pack{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div style="max-width: 950px; margin: 0 auto;">
+
+    <!-- TOP HEADER -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+        <div>
+            <span class="badge badge-primary">AI Interview Set Ready</span>
+            <h1 style="font-size: 2rem; margin-top: 6px;">{{ role }} @ {{ company }}</h1>
+            <p style="margin: 0;">Tailored for {{ experience }} • Skills: {{ skills|default:"Core Computer Science" }}</p>
+        </div>
+
+        <div style="display: flex; gap: 10px; align-items: center;">
+            {% if session %}
+                <a href="{% url 'interview_report' session.id %}" class="btn btn-success">
+                    📊 Performance Scorecard →
+                </a>
+            {% endif %}
+            <a href="{% url 'interview' %}" class="btn btn-outline">← New Mock</a>
+            <button onclick="window.print()" class="btn btn-primary">🖨️ Print</button>
+        </div>
+    </div>
+
+    <!-- INTERACTIVE ANSWER EVALUATION LAB -->
+    <div class="card" style="margin-bottom: 28px; background: linear-gradient(135deg, rgba(79, 70, 229, 0.08) 0%, rgba(16, 185, 129, 0.06) 100%); border-color: rgba(99, 102, 241, 0.3);">
+        <div class="card-header">
+            <div class="card-title">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path></svg>
+                <span>Interactive Live AI Answer Evaluator</span>
+            </div>
+            <span class="badge badge-success">Voice & Text Enabled</span>
+        </div>
+
+        <p style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 16px;">
+            Pick any interview question below, write or speak your answer, and receive an instant AI assessment score out of 10 with customized feedback.
+        </p>
+
+        <div class="form-group">
+            <label class="form-label">Question You Are Answering:</label>
+            <input type="text" id="live-question-input" class="form-control"
+                   placeholder="e.g. Explain the difference between Mutable and Immutable data types in Python."
+                   value="Explain the difference between Mutable and Immutable data types in Python.">
+        </div>
+
+        <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <label class="form-label" style="margin: 0;">Your Response / Answer:</label>
+                <button type="button" class="btn btn-outline btn-sm speech-mic-btn" data-target="live-answer-input">
+                    <span>🎙️ Speak Answer (Dictate)</span>
+                </button>
+            </div>
+            <textarea id="live-answer-input" class="form-control" rows="4"
+                      placeholder="Type your answer here or click 'Speak Answer' to dictate aloud using your microphone..."></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end;">
+            <button type="button" class="btn btn-primary ai-eval-btn"
+                    data-role="{{ role }}"
+                    data-question=""
+                    data-input-id="live-answer-input"
+                    data-output-id="live-eval-output">
+                <span>⚡ AI Evaluate My Answer</span>
+            </button>
+        </div>
+
+        <!-- EVALUATION OUTPUT CONTAINER -->
+        <div id="live-eval-output" style="display: none;"></div>
+    </div>
+
+    <!-- COMPLETE INTERVIEW QUESTIONS & MODEL ANSWERS -->
+    <div class="card" style="padding: 36px; line-height: 1.8;">
+        <h2 style="font-size: 1.5rem; margin-bottom: 20px; color: var(--text-primary); border-bottom: 2px solid var(--border-color); padding-bottom: 12px;">
+            📋 Complete Interview Preparation Set
+        </h2>
+
+        <div id="interview-formatted-content" class="ai-rendered-output">
+            {{ ai_result }}
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const rawContent = `{{ ai_result|escapejs }}`;
+        const target = document.getElementById('interview-formatted-content');
+        if (target && typeof marked !== 'undefined') {
+            target.innerHTML = marked.parse(rawContent);
+        }
+
+        // Sync question input to evaluator button attribute
+        const qInput = document.getElementById('live-question-input');
+        const evalBtn = document.querySelector('.ai-eval-btn');
+        if (qInput && evalBtn) {
+            evalBtn.setAttribute('data-question', qInput.value);
+            qInput.addEventListener('input', () => {
+                evalBtn.setAttribute('data-question', qInput.value);
+            });
+        }
+    });
+</script>
+<style>
+    .ai-rendered-output h3 {
+        font-size: 1.35rem;
+        margin-top: 26px;
+        margin-bottom: 12px;
+        color: var(--primary);
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 8px;
+    }
+    .ai-rendered-output h4 {
+        margin-top: 18px;
+        margin-bottom: 8px;
+        color: var(--text-primary);
+        font-size: 1.1rem;
+    }
+    .ai-rendered-output ul, .ai-rendered-output ol {
+        padding-left: 24px;
+        margin-bottom: 16px;
+    }
+    .ai-rendered-output li {
+        margin-bottom: 6px;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+
+{% block title %}Mock Interview Performance Report – CareerVerse AI{% endblock %}
+{% block breadcrumb %}<a href="{% url 'interview' %}">Mock Interview</a> / Performance Report{% endblock %}
+
+{% block extra_head %}
+<style>
+    .report-card {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        padding: 32px;
+        margin-bottom: 28px;
+    }
+    .score-circle {
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(79, 70, 229, 0.2) 0%, rgba(147, 51, 234, 0.2) 100%);
+        border: 4px solid var(--primary);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 12px;
+    }
+    .score-circle .number {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: var(--primary);
+        line-height: 1;
+    }
+    .score-circle .total {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        font-weight: 700;
+    }
+    .metric-card {
+        background: var(--bg-subtle);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        padding: 16px;
+        text-align: center;
+    }
+    .point-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 10px 14px;
+        border-radius: var(--radius-sm);
+        margin-bottom: 8px;
+        font-size: 0.92rem;
+        line-height: 1.5;
+    }
+    .point-item.strength {
+        background: rgba(16, 185, 129, 0.08);
+        border-left: 4px solid #10b981;
+    }
+    .point-item.weakness {
+        background: rgba(239, 68, 68, 0.08);
+        border-left: 4px solid #ef4444;
+    }
+    .point-item.suggestion {
+        background: rgba(99, 102, 241, 0.08);
+        border-left: 4px solid var(--primary);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="max-width: 960px; margin: 0 auto;">
+
+    <!-- TOP HEADER -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+        <div>
+            <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 6px;">
+                <span class="badge badge-primary">Evaluated Performance Report</span>
+                <span class="badge {{ badge_class }}">{{ level }}</span>
+            </div>
+            <h1 style="font-size: 2.2rem; margin: 0;">{{ session.role }} Mock Interview</h1>
+            <p style="margin: 4px 0 0; color: var(--text-muted);">
+                Target Company: <strong>{{ session.company }}</strong> • Evaluated on {{ session.created_at|date:"F d, Y • H:i" }}
+            </p>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <a href="{% url 'interview_history' %}" class="btn btn-outline btn-sm">
+                📋 All Reports
+            </a>
+            <a href="{% url 'interview' %}" class="btn btn-primary btn-sm">
+                🎙️ Practice Again
+            </a>
+        </div>
+    </div>
+
+    <!-- MAIN SCORECARD -->
+    <div class="report-card">
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 32px; align-items: center;">
+            <!-- Overall Score Dial -->
+            <div style="text-align: center; border-right: 1px solid var(--border-color); padding-right: 24px;">
+                <div class="score-circle">
+                    <span class="number">{{ session.overall_score }}</span>
+                    <span class="total">/ 100</span>
+                </div>
+                <div style="font-size: 1.1rem; font-weight: 800; color: var(--text-primary);">Overall Score</div>
+                <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">{{ level }}</div>
+            </div>
+
+            <!-- Sub-Metrics Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 16px;">
+                <div class="metric-card">
+                    <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">Technical Depth</div>
+                    <div style="font-size: 1.8rem; font-weight: 800; color: var(--primary); margin: 6px 0;">
+                        {{ session.technical_score }}%
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary);">Algorithm & Logic</div>
+                </div>
+
+                <div class="metric-card">
+                    <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">Communication</div>
+                    <div style="font-size: 1.8rem; font-weight: 800; color: #10b981; margin: 6px 0;">
+                        {{ session.communication_score }}%
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary);">Clarity & Articulation</div>
+                </div>
+
+                <div class="metric-card">
+                    <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">Confidence</div>
+                    <div style="font-size: 1.8rem; font-weight: 800; color: #f59e0b; margin: 6px 0;">
+                        {{ session.confidence_score }}%
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary);">Pacing & Composure</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STRENGTHS & WEAKNESSES ANALYSIS -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 28px;">
+        
+        <!-- STRENGTHS -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title" style="color: #10b981;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Identified Key Strengths</span>
+                </div>
+            </div>
+
+            <div>
+                {% for st in strengths %}
+                    <div class="point-item strength">
+                        <span style="color: #10b981; font-weight: 800;">✓</span>
+                        <span style="color: var(--text-primary);">{{ st }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- WEAKNESSES -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title" style="color: #ef4444;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    <span>Areas for Improvement</span>
+                </div>
+            </div>
+
+            <div>
+                {% for wk in weaknesses %}
+                    <div class="point-item weakness">
+                        <span style="color: #ef4444; font-weight: 800;">✗</span>
+                        <span style="color: var(--text-primary);">{{ wk }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ACTIONABLE IMPROVEMENT SUGGESTIONS -->
+    <div class="card" style="margin-bottom: 28px;">
+        <div class="card-header">
+            <div class="card-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                <span>Actionable Recommendations Before Your Next Interview</span>
+            </div>
+        </div>
+
+        <div>
+            {% for sg in suggestions %}
+                <div class="point-item suggestion">
+                    <span style="color: var(--primary); font-weight: 800;">👉</span>
+                    <span style="color: var(--text-primary);">{{ sg }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- RECOMMENDED TOPICS TO PRACTICE -->
+    <div class="card" style="margin-bottom: 28px;">
+        <div class="card-header">
+            <div class="card-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                <span>Recommended Study Modules & Practice Sets</span>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px;">
+            {% for top in recommended_topics %}
+                <div style="padding: 14px; background: var(--bg-subtle); border-radius: var(--radius-sm); border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 600; color: var(--text-primary); font-size: 0.9rem;">{{ top }}</span>
+                    <a href="{% url 'coding' %}" class="btn btn-outline btn-sm">Practice →</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- RAW AI QUESTIONS & TRANSCRIPT COLLAPSIBLE -->
+    {% if session.ai_result %}
+        <details class="card" style="margin-bottom: 28px;">
+            <summary style="font-weight: 700; cursor: pointer; color: var(--primary);">
+                📄 Click to View Full Interview Question Set Generated for {{ session.role }}
+            </summary>
+            <div style="margin-top: 16px; font-size: 0.92rem; line-height: 1.7; color: var(--text-primary); white-space: pre-line;">
+                {{ session.ai_result }}
+            </div>
+        </details>
+    {% endif %}
+
+</div>
+{% endblock %}
+

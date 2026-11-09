@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Mock Interview History & Performance Reports – CareerVerse AI{% endblock %}
+{% block breadcrumb %}<a href="{% url 'interview' %}">Mock Interview</a> / History{% endblock %}
+
+{% block content %}
+<div style="max-width: 960px; margin: 0 auto;">
+
+    <!-- HEADER -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+        <div>
+            <span class="badge badge-primary">Interview Performance Tracking</span>
+            <h1 style="font-size: 2rem; margin-top: 6px;">Mock Interview History</h1>
+            <p style="margin: 0; color: var(--text-secondary);">
+                Review all your AI-evaluated interview sessions, performance scorecards, and improvement progress.
+            </p>
+        </div>
+
+        <a href="{% url 'interview' %}" class="btn btn-primary">
+            🎙️ Start New Mock Interview →
+        </a>
+    </div>
+
+    <!-- SESSIONS LIST -->
+    <div class="card">
+        {% if sessions %}
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+                {% for sess in sessions %}
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; padding: 16px; background: var(--bg-subtle); border-radius: var(--radius-md); border: 1px solid var(--border-color); border-left: 4px solid var(--primary);">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                                <strong style="font-size: 1.1rem; color: var(--text-primary);">{{ sess.role }}</strong>
+                                <span class="badge badge-subtle">@ {{ sess.company }}</span>
+                                <span class="badge {% if sess.overall_score >= 80 %}badge-success{% elif sess.overall_score >= 65 %}badge-primary{% else %}badge-warning{% endif %}">
+                                    Score: {{ sess.overall_score }}/100
+                                </span>
+                            </div>
+                            <div style="font-size: 0.82rem; color: var(--text-muted);">
+                                {{ sess.interview_type }} Round • {{ sess.experience }} • {{ sess.created_at|date:"M d, Y • H:i" }}
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 10px;">
+                            <a href="{% url 'interview_report' sess.id %}" class="btn btn-primary btn-sm">
+                                📊 View Full Performance Report →
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 48px 20px;">
+                <div style="font-size: 2.5rem; margin-bottom: 12px;">🎙️</div>
+                <h3 style="margin-bottom: 8px;">No Interview Sessions Recorded Yet</h3>
+                <p style="color: var(--text-secondary); max-width: 460px; margin: 0 auto 20px;">
+                    Take your first AI mock interview tailored for your dream company and role to generate your first detailed performance scorecard.
+                </p>
+                <a href="{% url 'interview' %}" class="btn btn-primary">
+                    Launch AI Mock Interview Now
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}
+

@@ -1,0 +1,181 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CareerVerse AI - Placement Preparation & Career Guidance{% endblock %}</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<div class="app-wrapper">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="{% url 'dashboard' %}" class="logo-badge">
+                <div class="logo-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                        <polyline points="2 17 12 22 22 17"></polyline>
+                        <polyline points="2 12 12 17 22 12"></polyline>
+                    </svg>
+                </div>
+                <span>CareerVerse <span class="logo-tag">AI</span></span>
+            </a>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">Core Navigation</div>
+            <a href="{% url 'dashboard' %}" class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{% url 'student_progress' %}" class="nav-item {% if request.resolver_match.url_name == 'student_progress' %}active{% endif %}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                <span>Progress & Goals</span>
+            </a>
+
+            <a href="{% url 'career_guidance' %}" class="nav-item {% if request.resolver_match.url_name == 'career_guidance' %}active{% endif %}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                <span>AI Career Guidance</span>
+            </a>
+
+            <a href="{% url 'resume' %}" class="nav-item {% if request.resolver_match.url_name == 'resume' %}active{% endif %}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                <span>Resume Builder</span>
+            </a>
+
+            <div class="nav-section-title">Practice & Preparation</div>
+            <a href="{% url 'aptitude' %}" class="nav-item {% if request.resolver_match.url_name in 'aptitude quiz result' %}active{% endif %}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                <span>Aptitude Practice</span>
+            </a>
+
+            <a href="{% url 'coding' %}" class="nav-item {% if request.resolver_match.url_name in 'coding coding_detail' %}active{% endif %}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                <span>Coding Challenges</span>
+            </a>
+
+            <a href="{% url 'placement' %}" class="nav-item {% if request.resolver_match.url_name in 'placement company_detail company_compare' %}active{% endif %}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                <span>Company Hub</span>
+            </a>
+
+            <a href="{% url 'interview' %}" class="nav-item {% if request.resolver_match.url_name in 'interview technical hr' %}active{% endif %}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                <span>AI Mock Interview</span>
+            </a>
+
+            <a href="{% url 'interview_history' %}" class="nav-item {% if request.resolver_match.url_name in 'interview_history interview_report' %}active{% endif %}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                <span>Interview Reports</span>
+            </a>
+
+            <div class="nav-section-title">Account</div>
+            <a href="{% url 'profile' %}" class="nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <span>Student Profile</span>
+            </a>
+
+            <a href="{% url 'change_password' %}" class="nav-item {% if request.resolver_match.url_name == 'change_password' %}active{% endif %}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                <span>Password Security</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            {% if user.is_authenticated %}
+                <a href="{% url 'profile' %}" class="user-profile-pill">
+                    <div class="avatar-circle">
+                        {% if user.studentprofile.profile_picture %}
+                            <img src="{{ user.studentprofile.profile_picture.url }}" alt="{{ user.username }}">
+                        {% else %}
+                            {{ user.username|make_list|first|upper }}
+                        {% endif %}
+                    </div>
+                    <div class="user-info-text">
+                        <div class="user-name">{{ user.first_name|default:user.username }}</div>
+                        <div class="user-role">{{ user.studentprofile.department|default:"Student" }}</div>
+                    </div>
+                </a>
+            {% else %}
+                <div style="display:flex; gap:8px;">
+                    <a href="{% url 'login' %}" class="btn btn-outline btn-sm" style="flex:1;">Sign In</a>
+                    <a href="{% url 'register' %}" class="btn btn-primary btn-sm" style="flex:1;">Register</a>
+                </div>
+            {% endif %}
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-menu-btn" aria-label="Toggle navigation">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="breadcrumbs">
+                    <span>CareerVerse Portal</span> / <span>{% block breadcrumb %}Dashboard{% endblock %}</span>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <!-- Theme Toggle Button -->
+                <button class="theme-toggle-btn" title="Toggle Dark/Light Mode" aria-label="Toggle theme">
+                    <span class="theme-toggle-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    </span>
+                </button>
+
+                {% if user.is_authenticated %}
+                    <a href="{% url 'logout' %}" class="btn btn-outline btn-sm" title="Sign out">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        <span>Logout</span>
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-primary btn-sm">Sign In</a>
+                {% endif %}
+            </div>
+        </header>
+
+        <!-- FLASH MESSAGES -->
+        <main class="content-body">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags|default:'info' }}">
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</div>
+
+<!-- Main JavaScript -->
+<script src="{% static 'js/main.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}Coding Practice & Algorithms – CareerVerse AI{% endblock %}
+{% block breadcrumb %}Coding Preparation{% endblock %}
+
+{% block content %}
+<div>
+
+    <!-- HEADER -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+        <div>
+            <span class="badge badge-primary">LeetCode & Placement Challenges</span>
+            <h1 style="font-size: 2rem; margin-top: 6px;">Technical Coding Practice</h1>
+            <p style="margin: 0;">Practice multi-language programming (Python, Java, C, C++, JavaScript, C#, Go, PHP), SQL queries, and Data Structures tested in technical interviews.</p>
+        </div>
+
+        {% if message %}
+            <div class="alert alert-success" style="margin: 0;">
+                {{ message }}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- FILTER & SEARCH BAR -->
+    <div class="card" style="padding: 16px; margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+            <!-- CATEGORY BUTTONS -->
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <a href="?category=all{% if selected_difficulty != 'all' %}&difficulty={{ selected_difficulty }}{% endif %}" class="btn btn-sm {% if selected_category == 'all' %}btn-primary{% else %}btn-outline{% endif %}">
+                    All Categories
+                </a>
+                <a href="?category=python{% if selected_difficulty != 'all' %}&difficulty={{ selected_difficulty }}{% endif %}" class="btn btn-sm {% if selected_category == 'python' %}btn-primary{% else %}btn-outline{% endif %}">
+                    💻 Programming
+                </a>
+                <a href="?category=sql{% if selected_difficulty != 'all' %}&difficulty={{ selected_difficulty }}{% endif %}" class="btn btn-sm {% if selected_category == 'sql' %}btn-primary{% else %}btn-outline{% endif %}">
+                    🗄️ SQL Queries
+                </a>
+                <a href="?category=dsa{% if selected_difficulty != 'all' %}&difficulty={{ selected_difficulty }}{% endif %}" class="btn btn-sm {% if selected_category == 'dsa' %}btn-primary{% else %}btn-outline{% endif %}">
+                    ⚡ Data Structures & Algorithms
+                </a>
+            </div>
+
+            <!-- DIFFICULTY FILTER -->
+            <div style="display: flex; gap: 6px;">
+                <a href="?difficulty=all{% if selected_category != 'all' %}&category={{ selected_category }}{% endif %}" class="btn btn-sm {% if selected_difficulty == 'all' %}btn-primary{% else %}btn-outline{% endif %}">All</a>
+                <a href="?difficulty=Easy{% if selected_category != 'all' %}&category={{ selected_category }}{% endif %}" class="btn btn-sm {% if selected_difficulty == 'Easy' %}btn-primary{% else %}btn-outline{% endif %}">Easy</a>
+                <a href="?difficulty=Medium{% if selected_category != 'all' %}&category={{ selected_category }}{% endif %}" class="btn btn-sm {% if selected_difficulty == 'Medium' %}btn-primary{% else %}btn-outline{% endif %}">Medium</a>
+                <a href="?difficulty=Hard{% if selected_category != 'all' %}&category={{ selected_category }}{% endif %}" class="btn btn-sm {% if selected_difficulty == 'Hard' %}btn-primary{% else %}btn-outline{% endif %}">Hard</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROBLEMS LIST -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px;">
+        {% for prob in problems %}
+            <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; transition: var(--transition);">
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <span class="badge badge-subtle">{{ prob.get_category_display }}</span>
+                        <span class="badge {% if prob.difficulty == 'Easy' %}badge-easy{% elif prob.difficulty == 'Medium' %}badge-medium{% else %}badge-hard{% endif %}">
+                            {{ prob.difficulty }}
+                        </span>
+                    </div>
+
+                    <h3 style="font-size: 1.2rem; margin-bottom: 8px;">
+                        <a href="{% url 'coding_detail' prob.id %}" style="color: var(--text-primary);">
+                            {{ prob.title }}
+                        </a>
+                    </h3>
+
+                    <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px;">
+                        {{ prob.description|truncatewords:24 }}
+                    </p>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 14px; border-top: 1px solid var(--border-color);">
+                    {% if prob.id in solved_ids %}
+                        <span class="badge badge-success">✓ Solved</span>
+                    {% else %}
+                        <span class="badge badge-subtle">Unsolved</span>
+                    {% endif %}
+
+                    <a href="{% url 'coding_detail' prob.id %}" class="btn btn-primary btn-sm">
+                        Solve Challenge →
+                    </a>
+                </div>
+            </div>
+        {% empty %}
+            <!-- LEGACY DEFAULT CODING PROBLEMS FORM -->
+            <div class="card" style="grid-column: 1 / -1; padding: 32px;">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="problem" style="margin-bottom: 24px;">
+                        <h3>Problem 1: Sum of Two Numbers</h3>
+                        <p>Write a Python program to print the sum of two numbers.</p>
+                        <textarea name="code1" class="code-textarea" placeholder="num1 = 5&#10;num2 = 10&#10;print(num1 + num2)"></textarea>
+                    </div>
+
+                    <div class="problem" style="margin-bottom: 24px;">
+                        <h3>Problem 2: Even or Odd Checker</h3>
+                        <p>Write a Python program to check whether a number is even or odd.</p>
+                        <textarea name="code2" class="code-textarea" placeholder="n = 7&#10;print('Even' if n % 2 == 0 else 'Odd')"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg">Submit Code Solutions</button>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

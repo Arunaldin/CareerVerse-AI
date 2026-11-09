@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}HR & Behavioral Interview Preparation – CareerVerse AI{% endblock %}
+{% block breadcrumb %}HR & Behavioral Prep{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+
+    <div style="text-align: center; margin-bottom: 32px;">
+        <span class="badge badge-primary">HR & Behavioral Strategy</span>
+        <h1 style="font-size: 2.2rem; margin-top: 10px;">Mastering the HR & Culture Fit Round</h1>
+        <p>Learn how to formulate winning responses using the world-renowned STAR framework.</p>
+    </div>
+
+    {% if message %}
+        <div class="alert alert-success" style="margin-bottom: 24px;">
+            {{ message }}
+        </div>
+    {% endif %}
+
+    <!-- STAR METHODOLOGY CARD -->
+    <div class="card" style="margin-bottom: 24px; background: var(--primary-light); border-color: rgba(99, 102, 241, 0.3);">
+        <h2 style="color: var(--primary); font-size: 1.4rem; margin-bottom: 12px;">The STAR Framework for HR Rounds:</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px;">
+            <div style="background: var(--bg-surface); padding: 14px; border-radius: var(--radius-sm);">
+                <strong style="color: var(--primary); display: block;">S - Situation</strong>
+                <span style="font-size: 0.85rem; color: var(--text-secondary);">Set the context and describe the challenge or project.</span>
+            </div>
+            <div style="background: var(--bg-surface); padding: 14px; border-radius: var(--radius-sm);">
+                <strong style="color: var(--primary); display: block;">T - Task</strong>
+                <span style="font-size: 0.85rem; color: var(--text-secondary);">Explain your specific responsibility in that scenario.</span>
+            </div>
+            <div style="background: var(--bg-surface); padding: 14px; border-radius: var(--radius-sm);">
+                <strong style="color: var(--primary); display: block;">A - Action</strong>
+                <span style="font-size: 0.85rem; color: var(--text-secondary);">Detail the exact steps and technologies you employed.</span>
+            </div>
+            <div style="background: var(--bg-surface); padding: 14px; border-radius: var(--radius-sm);">
+                <strong style="color: var(--primary); display: block;">R - Result</strong>
+                <span style="font-size: 0.85rem; color: var(--text-secondary);">Quantify the positive outcome, metrics, and lessons learned.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- HIGH-FREQUENCY HR QUESTIONS -->
+    <div style="display: grid; gap: 16px;">
+        <div class="card">
+            <h3 style="font-size: 1.15rem; margin-bottom: 6px;">1. "Tell me about yourself."</h3>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 0;">
+                <strong>Strategy:</strong> Use the Past-Present-Future formula: Background -> Key college achievements & projects -> Why you're excited about this specific company.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3 style="font-size: 1.15rem; margin-bottom: 6px;">2. "What are your greatest strengths and weaknesses?"</h3>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 0;">
+                <strong>Strategy:</strong> Back your strength with a real project example. Pick a genuine weakness you are actively improving (e.g., public speaking, over-committing) and state the exact steps you are taking to mitigate it.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3 style="font-size: 1.15rem; margin-bottom: 6px;">3. "Why should we hire you over other candidates?"</h3>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 0;">
+                <strong>Strategy:</strong> Align your proven quick-learning agility, strong CS fundamentals, and cultural alignment with the team's ongoing mission.
+            </p>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 32px;">
+        <a href="{% url 'interview' %}" class="btn btn-primary btn-lg">Practice Behavioral Questions with AI Evaluator →</a>
+    </div>
+
+</div>
+{% endblock %}

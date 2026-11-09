@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Career Recommendation & Roadmap – CareerVerse AI{% endblock %}
+{% block breadcrumb %}Career Recommendation Result{% endblock %}
+
+{% block extra_head %}
+<!-- Markdown rendering support for structured AI responses -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div style="max-width: 950px; margin: 0 auto;">
+
+    <!-- TOP ACTION HEADER -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+        <div>
+            <span class="badge badge-primary">AI Career Analysis Generated</span>
+            <h1 style="font-size: 2rem; margin-top: 6px;">Your Personalized Career Roadmap</h1>
+            <p style="margin: 0;">Tailored for {{ degree }} (CGPA: {{ cgpa }})</p>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <a href="{% url 'career_guidance' %}" class="btn btn-outline">← New Assessment</a>
+            <button onclick="window.print()" class="btn btn-primary">🖨️ Print / Save Roadmap</button>
+        </div>
+    </div>
+
+    <!-- STUDENT INPUT SUMMARY PILL -->
+    <div class="card" style="padding: 16px 24px; margin-bottom: 24px; background: var(--bg-subtle);">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; font-size: 0.9rem;">
+            <div>
+                <span style="color: var(--text-muted); display: block; font-size: 0.75rem; text-transform: uppercase;">Degree</span>
+                <strong style="color: var(--text-primary);">{{ degree }}</strong>
+            </div>
+            <div>
+                <span style="color: var(--text-muted); display: block; font-size: 0.75rem; text-transform: uppercase;">Academic Standing</span>
+                <strong style="color: var(--text-primary);">{{ cgpa }} CGPA</strong>
+            </div>
+            <div>
+                <span style="color: var(--text-muted); display: block; font-size: 0.75rem; text-transform: uppercase;">Current Skills</span>
+                <strong style="color: var(--text-primary);">{{ skills|default:"Not specified" }}</strong>
+            </div>
+            <div>
+                <span style="color: var(--text-muted); display: block; font-size: 0.75rem; text-transform: uppercase;">Passions</span>
+                <strong style="color: var(--text-primary);">{{ interests|default:"Software Engineering" }}</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI RESULT CARD -->
+    <div class="card" style="padding: 36px; line-height: 1.8;">
+        <div id="ai-formatted-content" class="ai-rendered-output">
+            <!-- Rendered by Marked.js below -->
+            {{ ai_result }}
+        </div>
+    </div>
+
+    <!-- NEXT STEPS BANNER -->
+    <div class="card" style="margin-top: 28px; background: var(--primary-light); border-color: rgba(99, 102, 241, 0.3);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+            <div>
+                <h3 style="color: var(--primary); margin-bottom: 4px;">Ready to start your preparation?</h3>
+                <p style="margin: 0; font-size: 0.95rem;">Jump straight into practice aptitude or solve coding challenges aligned with this roadmap.</p>
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <a href="{% url 'aptitude' %}" class="btn btn-primary">Take Aptitude Test</a>
+                <a href="{% url 'coding' %}" class="btn btn-outline">Solve Coding Problems</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const rawContent = `{{ ai_result|escapejs }}`;
+        const target = document.getElementById('ai-formatted-content');
+        if (target && typeof marked !== 'undefined') {
+            target.innerHTML = marked.parse(rawContent);
+        }
+    });
+</script>
+<style>
+    .ai-rendered-output h3 {
+        font-size: 1.35rem;
+        margin-top: 24px;
+        margin-bottom: 12px;
+        color: var(--primary);
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 8px;
+    }
+    .ai-rendered-output h4 {
+        margin-top: 18px;
+        margin-bottom: 8px;
+        color: var(--text-primary);
+    }
+    .ai-rendered-output table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 16px 0;
+    }
+    .ai-rendered-output th, .ai-rendered-output td {
+        padding: 10px 14px;
+        border: 1px solid var(--border-color);
+        text-align: left;
+    }
+    .ai-rendered-output th {
+        background-color: var(--bg-subtle);
+        font-weight: 700;
+    }
+    .ai-rendered-output ul, .ai-rendered-output ol {
+        padding-left: 24px;
+        margin-bottom: 16px;
+    }
+    .ai-rendered-output li {
+        margin-bottom: 6px;
+    }
+    .ai-rendered-output hr {
+        border: none;
+        border-top: 1px solid var(--border-color);
+        margin: 24px 0;
+    }
+</style>
+{% endblock %}

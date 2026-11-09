@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}Company vs Company Comparison – CareerVerse AI{% endblock %}
+{% block breadcrumb %}<a href="{% url 'placement' %}">Companies</a> / Company Comparison{% endblock %}
+
+{% block content %}
+<div style="max-width: 1100px; margin: 0 auto;">
+
+    <!-- HEADER -->
+    <div style="text-align: center; margin-bottom: 32px;">
+        <span class="badge badge-primary">Recruiter Battlecard</span>
+        <h1 style="font-size: 2.3rem; margin-top: 10px;">Company vs Company Comparison</h1>
+        <p>Compare recruitment stages, cutoff criteria, package tiers, and hiring focus between top recruiters.</p>
+    </div>
+
+    <!-- SELECTION FORM -->
+    <div class="card" style="margin-bottom: 32px; padding: 24px;">
+        <form method="GET" action="{% url 'company_compare' %}" style="display: grid; grid-template-columns: 1fr auto 1fr auto; gap: 16px; align-items: flex-end;">
+            <div class="form-group" style="margin: 0;">
+                <label class="form-label">First Company</label>
+                <select name="comp1" class="form-control" style="font-weight: 600;">
+                    {% for c in all_companies %}
+                        <option value="{{ c.slug }}" {% if comp1.slug == c.slug %}selected{% endif %}>{{ c.name }} ({{ c.category }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary); padding-bottom: 8px;">VS</div>
+
+            <div class="form-group" style="margin: 0;">
+                <label class="form-label">Second Company</label>
+                <select name="comp2" class="form-control" style="font-weight: 600;">
+                    {% for c in all_companies %}
+                        <option value="{{ c.slug }}" {% if comp2.slug == c.slug %}selected{% endif %}>{{ c.name }} ({{ c.category }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="height: 48px; padding: 0 24px;">
+                Compare ⚖️
+            </button>
+        </form>
+    </div>
+
+    <!-- HEAD TO HEAD COMPARISON GRID -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 36px;">
+        <!-- COMPANY 1 -->
+        <div class="card" style="border-top: 5px solid {{ comp1.accent_color }};">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                <div>
+                    <span class="badge badge-subtle">{{ comp1.category }}</span>
+                    <h2 style="font-size: 1.6rem; margin-top: 6px;">{{ comp1.name }}</h2>
+                    <p style="font-size: 0.88rem; color: var(--text-muted); font-style: italic; margin: 0;">"{{ comp1.tagline }}"</p>
+                </div>
+                <div class="avatar-circle" style="background: {{ comp1.accent_color }}; width: 52px; height: 52px; font-size: 1.4rem;">
+                    {{ comp1.name|make_list|first }}
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 14px; background: var(--bg-subtle); padding: 18px; border-radius: var(--radius-md); border: 1px solid var(--border-color); font-size: 0.92rem;">
+                <div><strong>💰 Package:</strong> {{ comp1.package_range }}</div>
+                <div><strong>🎓 CGPA Cutoff:</strong> {{ comp1.eligibility_cgpa }} Minimum</div>
+                <div><strong>📜 Allowed Backlogs:</strong> {{ comp1.backlogs_allowed }}</div>
+                <div><strong>🏛️ Eligible Branches:</strong> {{ comp1.eligible_branches }}</div>
+            </div>
+
+            <h4 style="margin: 20px 0 10px; color: var(--text-primary);">Selection Process ({{ comp1.selection_rounds|length }} Rounds):</h4>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                {% for r in comp1.selection_rounds %}
+                    <div style="background: var(--bg-subtle); padding: 10px 14px; border-radius: var(--radius-sm); font-size: 0.88rem; border-left: 3px solid {{ comp1.accent_color }};">
+                        <strong>{{ r.name }}</strong> ({{ r.duration }})<br>
+                        <span style="color: var(--text-secondary); font-size: 0.82rem;">{{ r.desc }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div style="margin-top: 24px; text-align: center;">
+                <a href="{% url 'company_detail' comp1.slug %}" class="btn btn-outline btn-block">
+                    View Complete {{ comp1.name }} Guide →
+                </a>
+            </div>
+        </div>
+
+        <!-- COMPANY 2 -->
+        <div class="card" style="border-top: 5px solid {{ comp2.accent_color }};">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                <div>
+                    <span class="badge badge-subtle">{{ comp2.category }}</span>
+                    <h2 style="font-size: 1.6rem; margin-top: 6px;">{{ comp2.name }}</h2>
+                    <p style="font-size: 0.88rem; color: var(--text-muted); font-style: italic; margin: 0;">"{{ comp2.tagline }}"</p>
+                </div>
+                <div class="avatar-circle" style="background: {{ comp2.accent_color }}; width: 52px; height: 52px; font-size: 1.4rem;">
+                    {{ comp2.name|make_list|first }}
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 14px; background: var(--bg-subtle); padding: 18px; border-radius: var(--radius-md); border: 1px solid var(--border-color); font-size: 0.92rem;">
+                <div><strong>💰 Package:</strong> {{ comp2.package_range }}</div>
+                <div><strong>🎓 CGPA Cutoff:</strong> {{ comp2.eligibility_cgpa }} Minimum</div>
+                <div><strong>📜 Allowed Backlogs:</strong> {{ comp2.backlogs_allowed }}</div>
+                <div><strong>🏛️ Eligible Branches:</strong> {{ comp2.eligible_branches }}</div>
+            </div>
+
+            <h4 style="margin: 20px 0 10px; color: var(--text-primary);">Selection Process ({{ comp2.selection_rounds|length }} Rounds):</h4>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                {% for r in comp2.selection_rounds %}
+                    <div style="background: var(--bg-subtle); padding: 10px 14px; border-radius: var(--radius-sm); font-size: 0.88rem; border-left: 3px solid {{ comp2.accent_color }};">
+                        <strong>{{ r.name }}</strong> ({{ r.duration }})<br>
+                        <span style="color: var(--text-secondary); font-size: 0.82rem;">{{ r.desc }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div style="margin-top: 24px; text-align: center;">
+                <a href="{% url 'company_detail' comp2.slug %}" class="btn btn-outline btn-block">
+                    View Complete {{ comp2.name }} Guide →
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+

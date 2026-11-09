@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Technical Interview Revision – CareerVerse AI{% endblock %}
+{% block breadcrumb %}Technical Revision{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+
+    <div style="text-align: center; margin-bottom: 32px;">
+        <span class="badge badge-primary">Technical Round Prep</span>
+        <h1 style="font-size: 2.2rem; margin-top: 10px;">Core CS Concepts & Technical Questions</h1>
+        <p>Essential computer science interview topics: OOP, DBMS, OS, and System Design.</p>
+    </div>
+
+    {% if message %}
+        <div class="alert alert-success" style="margin-bottom: 24px;">
+            {{ message }}
+        </div>
+    {% endif %}
+
+    <div style="display: grid; gap: 20px;">
+        <div class="card">
+            <h3 style="color: var(--primary); margin-bottom: 10px;">1. Object-Oriented Programming (OOP)</h3>
+            <p><strong>Core Pillars:</strong> Encapsulation, Abstraction, Inheritance, and Polymorphism.</p>
+            <div style="background: var(--bg-subtle); padding: 14px; border-radius: var(--radius-sm); font-size: 0.9rem;">
+                <strong>Common Question:</strong> What is the difference between Method Overloading and Method Overriding?<br>
+                <em>Overloading happens at compile-time with identical names but different signatures. Overriding happens at runtime when a subclass provides a specific implementation of a parent class method.</em>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="color: var(--primary); margin-bottom: 10px;">2. Database Management Systems (DBMS)</h3>
+            <p><strong>ACID Properties:</strong> Atomicity, Consistency, Isolation, Durability.</p>
+            <div style="background: var(--bg-subtle); padding: 14px; border-radius: var(--radius-sm); font-size: 0.9rem;">
+                <strong>Common Question:</strong> What is the difference between Primary Key, Unique Key, and Foreign Key?<br>
+                <em>Primary Key uniquely identifies a record and cannot be NULL. Unique Key allows one NULL. Foreign Key enforces referential integrity by pointing to a Primary Key in another table.</em>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="color: var(--primary); margin-bottom: 10px;">3. Operating Systems & Networks</h3>
+            <p><strong>Topics:</strong> Process vs Thread, Paging, Virtual Memory, Deadlock conditions, and TCP 3-way handshake.</p>
+            <div style="background: var(--bg-subtle); padding: 14px; border-radius: var(--radius-sm); font-size: 0.9rem;">
+                <strong>Common Question:</strong> What happens when you type a URL in the browser and press Enter?<br>
+                <em>DNS lookup -> TCP connection -> HTTP/S request sent -> Server processes and returns response -> Browser parses HTML/CSS/JS and renders DOM.</em>
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 32px;">
+        <a href="{% url 'interview' %}" class="btn btn-primary btn-lg">Launch Interactive AI Mock Interview →</a>
+    </div>
+
+</div>
+{% endblock %}

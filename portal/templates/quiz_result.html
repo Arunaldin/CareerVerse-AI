@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Quiz Results – CareerVerse AI{% endblock %}
+{% block breadcrumb %}Quiz Result{% endblock %}
+
+{% block content %}
+<div style="max-width: 750px; margin: 40px auto; text-align: center;">
+
+    <div class="card" style="padding: 48px 32px;">
+        <div style="font-size: 3.5rem; margin-bottom: 12px;">
+            {% if accuracy >= 70 %}🎉{% else %}💪{% endif %}
+        </div>
+
+        <span class="badge {% if accuracy >= 70 %}badge-success{% else %}badge-warning{% endif %}" style="font-size: 0.9rem; padding: 6px 16px;">
+            Placement Foundation Quiz
+        </span>
+
+        <h1 style="font-size: 2.5rem; margin: 16px 0 8px;">
+            Score: <span class="text-gradient">{{ score }} / {{ total|default:"10" }}</span>
+        </h1>
+
+        <p style="font-size: 1.15rem; color: var(--text-secondary); margin-bottom: 24px;">
+            Your Accuracy: <strong>{{ accuracy }}%</strong>
+        </p>
+
+        <div style="background: var(--bg-subtle); border-radius: var(--radius-md); padding: 20px; text-align: left; margin-bottom: 32px; border: 1px solid var(--border-color);">
+            <h4 style="margin-bottom: 8px; color: var(--text-primary);">📊 Placement Evaluation:</h4>
+            {% if accuracy >= 80 %}
+                <p style="margin: 0; font-size: 0.95rem; color: var(--success);">
+                    <strong>Excellent grasp of fundamental CS and programming!</strong> You are ready to tackle intermediate algorithms and technical interview rounds.
+                </p>
+            {% else %}
+                <p style="margin: 0; font-size: 0.95rem; color: var(--warning);">
+                    <strong>Good attempt!</strong> Revisit Python data structures and SQL fundamentals, then try the coding workbench challenges.
+                </p>
+            {% endif %}
+        </div>
+
+        <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+            <a href="{% url 'quiz' %}" class="btn btn-outline btn-lg">🔄 Retake Quiz</a>
+            <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg">Return to Dashboard →</a>
+            <a href="{% url 'coding' %}" class="btn btn-success btn-lg">Solve Coding Challenges →</a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact & Support – CareerVerse AI{% endblock %}
+{% block breadcrumb %}Contact Us{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+
+    <div style="text-align: center; margin-bottom: 32px;">
+        <span class="badge badge-primary">Support & Inquiries</span>
+        <h1 style="font-size: 2.2rem; margin-top: 10px;">Get in Touch With Us</h1>
+        <p>Have questions about placement training, company patterns, or feature suggestions? We'd love to hear from you.</p>
+    </div>
+
+    <div class="card" style="padding: 36px;">
+        <form method="POST">
+            {% csrf_token %}
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label class="form-label">Your Name</label>
+                    <input type="text" name="name" class="form-control" placeholder="e.g. John Doe" value="{{ user.first_name|default:user.username }}" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" name="email" class="form-control" placeholder="john@example.com" value="{{ user.email }}" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Subject</label>
+                <input type="text" name="subject" class="form-control" placeholder="e.g. Placement query, Bug report, Feature request" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Message</label>
+                <textarea name="message" class="form-control" rows="5" placeholder="Write your message here..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg btn-block">
+                Send Message ✉️
+            </button>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

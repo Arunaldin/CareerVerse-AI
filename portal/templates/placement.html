@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}Placement Preparation & Company Hub – CareerVerse AI{% endblock %}
+{% block breadcrumb %}Placement Preparation{% endblock %}
+
+{% block content %}
+<div>
+
+    <!-- HEADER -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+        <div>
+            <span class="badge badge-primary">Company-Specific Placement Hub</span>
+            <h1 style="font-size: 2rem; margin-top: 6px;">100+ Top Recruiters & Syllabus Patterns</h1>
+            <p style="margin: 0;">Comprehensive patterns, hiring rounds, CGPA cutoffs, and previous technical interview roadmaps for 100+ companies.</p>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <a href="{% url 'company_compare' %}" class="btn btn-outline" style="border-color: var(--primary); color: var(--primary);">
+                ⚖️ Compare Companies
+            </a>
+        </div>
+    </div>
+
+    <!-- SEARCH & FILTER BAR -->
+    <div class="card" style="padding: 18px 20px; margin-bottom: 24px;">
+        <form method="GET" action="{% url 'placement' %}" style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+            <div style="flex: 1; min-width: 260px; position: relative;">
+                <input type="text" name="q" value="{{ search_query }}" placeholder="🔍 Search by company name, role, tech stack, or branch..." class="form-control" style="padding-left: 14px;">
+            </div>
+            {% if selected_category != 'all' %}
+                <input type="hidden" name="category" value="{{ selected_category }}">
+            {% endif %}
+            <button type="submit" class="btn btn-primary">Search</button>
+            {% if search_query %}
+                <a href="{% url 'placement' %}" class="btn btn-outline">Clear</a>
+            {% endif %}
+        </form>
+
+        <!-- CATEGORY FILTER TABS -->
+        <div style="display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap;">
+            <a href="?category=all{% if search_query %}&q={{ search_query }}{% endif %}" class="btn btn-sm {% if selected_category == 'all' %}btn-primary{% else %}btn-outline{% endif %}">
+                All ({{ total_count }})
+            </a>
+            <a href="?category=IT Services{% if search_query %}&q={{ search_query }}{% endif %}" class="btn btn-sm {% if selected_category == 'IT Services' %}btn-primary{% else %}btn-outline{% endif %}">
+                🏢 IT Services
+            </a>
+            <a href="?category=Product{% if search_query %}&q={{ search_query }}{% endif %}" class="btn btn-sm {% if selected_category == 'Product' %}btn-primary{% else %}btn-outline{% endif %}">
+                ⚡ Product Engineering
+            </a>
+            <a href="?category=Tech Giant{% if search_query %}&q={{ search_query }}{% endif %}" class="btn btn-sm {% if selected_category == 'Tech Giant' %}btn-primary{% else %}btn-outline{% endif %}">
+                🌐 Tech Giants
+            </a>
+            <a href="?category=Startup & Scaleup{% if search_query %}&q={{ search_query }}{% endif %}" class="btn btn-sm {% if selected_category == 'Startup & Scaleup' %}btn-primary{% else %}btn-outline{% endif %}">
+                🚀 Startups & FinTech
+            </a>
+        </div>
+    </div>
+
+    <!-- COMPANIES GRID -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 24px;">
+        {% for comp in companies %}
+            <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; border-top: 4px solid {{ comp.accent_color }};">
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px;">
+                        <div>
+                            <span class="badge badge-subtle">{{ comp.category }}</span>
+                            <h2 style="font-size: 1.35rem; margin-top: 8px;">
+                                <a href="{% url 'company_detail' comp.slug %}" style="color: var(--text-primary);">
+                                    {{ comp.name }}
+                                </a>
+                            </h2>
+                        </div>
+                        <div class="avatar-circle" style="background: {{ comp.accent_color }}; width: 44px; height: 44px;">
+                            {{ comp.name|make_list|first }}
+                        </div>
+                    </div>
+
+                    <p style="font-size: 0.88rem; color: var(--text-muted); font-style: italic; margin-bottom: 12px;">
+                        "{{ comp.tagline }}"
+                    </p>
+
+                    <div style="background: var(--bg-subtle); padding: 12px; border-radius: var(--radius-sm); margin-bottom: 16px; font-size: 0.85rem;">
+                        <div style="margin-bottom: 4px;"><strong>💰 Compensation:</strong> {{ comp.package_range }}</div>
+                        <div style="margin-bottom: 4px;"><strong>🎓 CGPA Cutoff:</strong> {{ comp.eligibility_cgpa }} Minimum</div>
+                        <div><strong>📜 Allowed Backlogs:</strong> {{ comp.backlogs_allowed }}</div>
+                    </div>
+
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;">
+                        {{ comp.overview|truncatewords:22 }}
+                    </p>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 14px; border-top: 1px solid var(--border-color);">
+                    <span style="font-size: 0.82rem; color: var(--text-muted);">
+                        {{ comp.selection_rounds|length }} Selection Rounds
+                    </span>
+                    <a href="{% url 'company_detail' comp.slug %}" class="btn btn-primary btn-sm">
+                        View Complete Guide →
+                    </a>
+                </div>
+            </div>
+        {% empty %}
+            <!-- LEGACY FALLBACK CARDS -->
+            <div class="card">
+                <h2>🎯 Aptitude Preparation</h2>
+                <p>Quantitative, logical, and verbal practice.</p>
+                <a href="{% url 'aptitude' %}" class="btn btn-primary btn-sm">Start Aptitude</a>
+            </div>
+            <div class="card">
+                <h2>💻 Coding Round</h2>
+                <p>Data Structures and programming tests.</p>
+                <a href="{% url 'coding' %}" class="btn btn-primary btn-sm">Start Coding</a>
+            </div>
+            <div class="card">
+                <h2>🏢 Technical Interview</h2>
+                <p>DBMS, OOP, OS, and System Design.</p>
+                <a href="{% url 'technical' %}" class="btn btn-primary btn-sm">Revise Technical</a>
+            </div>
+            <div class="card">
+                <h2>🤝 HR & Behavioral Round</h2>
+                <p>STAR framework and leadership principles.</p>
+                <a href="{% url 'hr' %}" class="btn btn-primary btn-sm">Practice HR</a>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

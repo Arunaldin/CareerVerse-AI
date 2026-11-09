@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In – CareerVerse AI</title>
+    {% load static %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body style="display: flex; min-height: 100vh; align-items: center; justify-content: center; background-color: var(--bg-body); padding: 20px;">
+
+    <div class="card" style="width: 100%; max-width: 440px; padding: 36px;">
+        <div style="text-align: center; margin-bottom: 28px;">
+            <a href="/" class="logo-badge" style="justify-content: center; margin-bottom: 16px;">
+                <div class="logo-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                        <polyline points="2 17 12 22 22 17"></polyline>
+                        <polyline points="2 12 12 17 22 12"></polyline>
+                    </svg>
+                </div>
+                <span>CareerVerse <span class="logo-tag">AI</span></span>
+            </a>
+            <h1 style="font-size: 1.6rem; margin-bottom: 6px;">Welcome Back</h1>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin: 0;">Sign in to continue your placement preparation</p>
+        </div>
+
+        {% if error %}
+            <div class="alert alert-danger" style="font-size: 0.88rem; padding: 10px 14px; margin-bottom: 20px;">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags|default:'info' }}" style="font-size: 0.88rem; padding: 10px 14px; margin-bottom: 20px;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <input type="text" name="username" class="form-control" placeholder="Enter your username" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <label class="form-label" style="margin: 0;">Password</label>
+                </div>
+                <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top: 24px;">
+                Sign In to Dashboard →
+            </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 24px; font-size: 0.9rem; color: var(--text-secondary); border-top: 1px solid var(--border-color); padding-top: 20px;">
+            Don't have an account yet? 
+            <a href="{% url 'register' %}" style="font-weight: 700; color: var(--primary);">Create an Account</a>
+        </div>
+        
+        <div style="text-align: center; margin-top: 14px;">
+            <a href="/" style="font-size: 0.85rem; color: var(--text-muted);">← Back to Home</a>
+        </div>
+    </div>
+
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

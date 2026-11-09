@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Assessment Result – CareerVerse AI{% endblock %}
+{% block breadcrumb %}Result{% endblock %}
+
+{% block content %}
+<div style="max-width: 700px; margin: 40px auto; text-align: center;">
+    <div class="card" style="padding: 40px;">
+        <h2>Assessment Completed Successfully</h2>
+        <p style="margin: 16px 0 24px;">Your response has been evaluated and recorded to your student dashboard profile.</p>
+        <a href="{% url 'dashboard' %}" class="btn btn-primary">Go to Dashboard →</a>
+    </div>
+</div>
+{% endblock %}

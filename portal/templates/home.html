@@ -1,0 +1,308 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareerVerse AI – Your Dream Job Starts Here | Placement Portal</title>
+
+    <!-- SEO & Social Sharing Metadata -->
+    <meta name="description" content="One Platform. Every Step Towards Your Dream Job. Master campus placements with 100+ company prep guides, multi-language coding practice, aptitude tests, AI mock interviews, and ATS resumes. 100% Free Student Access.">
+    <meta property="og:title" content="CareerVerse AI – Free Placement Preparation Portal">
+    <meta property="og:description" content="Transform from zero placement knowledge to job readiness. 100+ Companies, Multi-Language IDE, Aptitude Arena, AI Mentor & Resume Studio.">
+    <meta property="og:type" content="website">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <!-- LANDING HEADER -->
+    <header class="landing-header">
+        <a href="/" class="logo-badge">
+            <div class="logo-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                    <polyline points="2 17 12 22 22 17"></polyline>
+                    <polyline points="2 12 12 17 22 12"></polyline>
+                </svg>
+            </div>
+            <span>CareerVerse <span class="logo-tag">AI</span></span>
+        </a>
+
+        <ul class="landing-nav">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#companies">100+ Companies</a></li>
+            <li><a href="#free-access">Free Access</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#faq">FAQ</a></li>
+            <li><a href="{% url 'about' %}">About</a></li>
+        </ul>
+
+        <div style="display: flex; align-items: center; gap: 14px;">
+            {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}" class="btn btn-primary">Go to Dashboard →</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-outline">Sign In</a>
+                <a href="{% url 'register' %}" class="btn btn-primary">Get Free Access 🚀</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero-section">
+        <div class="hero-pill">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            <span>One Platform. Every Step Towards Your Dream Job.</span>
+        </div>
+
+        <h1 class="hero-title">
+            Your Dream Job <br>
+            <span class="text-gradient">Starts Right Here.</span>
+        </h1>
+
+        <p class="hero-desc">
+            One intelligent platform for coding, aptitude, interviews, resumes, and career growth.
+            From your very first line of code to cracking top campus placement drives at TCS, Infosys, Amazon, and Zoho.
+        </p>
+
+        <div class="hero-actions">
+            {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg">Launch My Dashboard 🚀</a>
+            {% else %}
+                <a href="{% url 'register' %}" class="btn btn-primary btn-lg">Get Free Access 🚀</a>
+                <a href="{% url 'placement' %}" class="btn btn-outline btn-lg">Explore 100+ Companies</a>
+            {% endif %}
+        </div>
+
+        <!-- STATS BAR -->
+        <div class="stats-grid" style="margin-top: 40px; text-align: left;">
+            <div class="stat-card">
+                <div>
+                    <div class="stat-label">Placement Content</div>
+                    <div class="stat-value">28+</div>
+                    <div class="stat-subtext">Verified Company Roadmaps</div>
+                </div>
+                <div class="stat-icon indigo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div>
+                    <div class="stat-label">Coding & DSA</div>
+                    <div class="stat-value">50+</div>
+                    <div class="stat-subtext">Python, SQL & Algorithms</div>
+                </div>
+                <div class="stat-icon emerald">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div>
+                    <div class="stat-label">Aptitude Suite</div>
+                    <div class="stat-value">100+</div>
+                    <div class="stat-subtext">Quant, Logical & Verbal</div>
+                </div>
+                <div class="stat-icon amber">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div>
+                    <div class="stat-label">Autonomous AI</div>
+                    <div class="stat-value">8 Agents</div>
+                    <div class="stat-subtext">Coordinated Placement Mentors</div>
+                </div>
+                <div class="stat-icon cyan">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path></svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CORE FEATURES SECTION -->
+    <section id="features" style="max-width: 1200px; margin: 60px auto; padding: 0 20px;">
+        <div style="text-align: center; margin-bottom: 48px;">
+            <span class="badge badge-primary">Comprehensive Career Ecosystem</span>
+            <h2 style="font-size: 2.3rem; margin-top: 12px;">Everything You Need To Get Placed</h2>
+            <p>Designed for university students and freshers targeting high-paying software and IT jobs.</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
+            <div class="card">
+                <div class="stat-icon indigo" style="margin-bottom: 16px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                </div>
+                <h3>🤖 Autonomous AI Placement Agent</h3>
+                <p>Not just a chatbot—a dedicated multi-agent planner analyzing your CGPA, skills, and target companies to construct dynamic roadmaps and evaluate answers.</p>
+                <a href="{% url 'career_guidance' %}" style="font-weight: 700;">Meet Your AI Agent →</a>
+            </div>
+
+            <div class="card">
+                <div class="stat-icon emerald" style="margin-bottom: 16px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                </div>
+                <h3>💻 LeetCode-Style Coding Sandbox</h3>
+                <p>Interactive code editor with live Python test-case execution, constraints, complexity hints, and LeetCode-style problem difficulty tiers.</p>
+                <a href="{% url 'coding' %}" style="font-weight: 700;">Solve Coding Problems →</a>
+            </div>
+
+            <div class="card">
+                <div class="stat-icon amber" style="margin-bottom: 16px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                </div>
+                <h3>🎯 Timed Aptitude Arena</h3>
+                <p>Quantitative math, logical reasoning, and verbal tests with live countdown timers, step-by-step solutions, and performance accuracy analytics.</p>
+                <a href="{% url 'aptitude' %}" style="font-weight: 700;">Take Practice Tests →</a>
+            </div>
+
+            <div class="card">
+                <div class="stat-icon cyan" style="margin-bottom: 16px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path></svg>
+                </div>
+                <h3>🎙️ AI Voice & Text Mock Interview</h3>
+                <p>Role-specific technical & behavioral interview simulations with voice dictation, answer scoring out of 10, and high-scoring model answers.</p>
+                <a href="{% url 'interview' %}" style="font-weight: 700;">Practice Mock Interview →</a>
+            </div>
+
+            <div class="card">
+                <div class="stat-icon indigo" style="margin-bottom: 16px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                </div>
+                <h3>📄 ATS-Friendly Resume Builder 2.0</h3>
+                <p>Build professional, recruiter-approved resumes with live instant preview, multiple clean templates (Modern, Executive, Minimalist), and 1-click PDF download.</p>
+                <a href="{% url 'resume' %}" style="font-weight: 700;">Create Your Resume →</a>
+            </div>
+
+            <div class="card">
+                <div class="stat-icon emerald" style="margin-bottom: 16px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                </div>
+                <h3>🏢 28+ Companies Preparation Center</h3>
+                <p>Syllabus patterns, CGPA eligibility cutoffs, hiring rounds, and previously asked questions for TCS, Infosys, Zoho, Amazon, Accenture, Google & more.</p>
+                <a href="{% url 'placement' %}" style="font-weight: 700;">Explore Companies →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 100% FREE STUDENT ACCESS PRICING SECTION -->
+    <section id="free-access" style="max-width: 860px; margin: 80px auto; padding: 0 20px;">
+        <div style="text-align: center; margin-bottom: 36px;">
+            <span class="badge badge-success" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); font-weight: 700; padding: 6px 14px; border-radius: 9999px; font-size: 0.85rem;">
+                100% FREE – STUDENT ACCESS
+            </span>
+            <h2 style="font-size: 2.4rem; margin-top: 14px; color: var(--text-primary); font-weight: 800;">
+                Empowering Every Student to Get Placed
+            </h2>
+            <p style="color: var(--text-muted); font-size: 1.05rem; max-width: 600px; margin: 8px auto 0;">
+                No subscriptions. No credit cards. No hidden paywalls. Everything you need to prepare for campus placement drives is completely free.
+            </p>
+        </div>
+
+        <!-- SINGLE CENTERED FREE CARD -->
+        <div class="pricing-card featured" style="max-width: 680px; margin: 0 auto; padding: 36px 32px; border-radius: 20px; border: 2px solid rgba(139, 92, 246, 0.4); background: linear-gradient(180deg, rgba(26, 23, 44, 0.95) 0%, rgba(15, 13, 26, 0.98) 100%); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 40px rgba(139, 92, 246, 0.15);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                <div>
+                    <span class="badge badge-success" style="background: #10b981; color: #ffffff; font-weight: 700; font-size: 0.8rem; padding: 4px 10px; border-radius: 6px;">
+                        100% FREE – STUDENT ACCESS
+                    </span>
+                    <h3 style="font-size: 1.8rem; margin: 12px 0 4px; color: #ffffff; font-weight: 800; letter-spacing: -0.5px;">
+                        CAREERVERSE AI – FREE STUDENT ACCESS
+                    </h3>
+                    <p style="font-size: 0.9rem; color: #a1a1aa; margin: 0;">Full suite placement preparation for college graduates & job seekers.</p>
+                </div>
+                <div style="text-align: right;">
+                    <div class="pricing-price" style="color: #ffffff; font-size: 3rem; font-weight: 800; line-height: 1;">
+                        ₹0 <span style="font-size: 1.05rem; font-weight: 500; color: #a1a1aa;">/ month</span>
+                    </div>
+                    <span style="font-size: 0.8rem; color: #10b981; font-weight: 700;">Zero Cost • Lifetime Free</span>
+                </div>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid rgba(255, 255, 255, 0.1); margin: 20px 0 24px;">
+
+            <div style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #c4b5fd; margin-bottom: 16px;">
+                Included With Free Student Membership:
+            </div>
+
+            <ul class="pricing-features" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px 20px; list-style: none; padding: 0; margin-bottom: 32px;">
+                <li style="display: flex; align-items: center; gap: 10px; font-size: 0.92rem; color: #e4e4e7;"><span style="color: #10b981; font-weight: bold;">✓</span> Access to 100+ company profiles</li>
+                <li style="display: flex; align-items: center; gap: 10px; font-size: 0.92rem; color: #e4e4e7;"><span style="color: #10b981; font-weight: bold;">✓</span> Company-specific placement roadmaps</li>
+                <li style="display: flex; align-items: center; gap: 10px; font-size: 0.92rem; color: #e4e4e7;"><span style="color: #10b981; font-weight: bold;">✓</span> Multi-language coding practice</li>
+                <li style="display: flex; align-items: center; gap: 10px; font-size: 0.92rem; color: #e4e4e7;"><span style="color: #10b981; font-weight: bold;">✓</span> 500+ coding challenges as they become available</li>
+                <li style="display: flex; align-items: center; gap: 10px; font-size: 0.92rem; color: #e4e4e7;"><span style="color: #10b981; font-weight: bold;">✓</span> 100+ aptitude questions with explanations</li>
+                <li style="display: flex; align-items: center; gap: 10px; font-size: 0.92rem; color: #e4e4e7;"><span style="color: #10b981; font-weight: bold;">✓</span> SQL database & query practice</li>
+                <li style="display: flex; align-items: center; gap: 10px; font-size: 0.92rem; color: #e4e4e7;"><span style="color: #10b981; font-weight: bold;">✓</span> AI Career Mentor with usage limits</li>
+                <li style="display: flex; align-items: center; gap: 10px; font-size: 0.92rem; color: #e4e4e7;"><span style="color: #10b981; font-weight: bold;">✓</span> AI Coding Assistant with usage limits</li>
+                <li style="display: flex; align-items: center; gap: 10px; font-size: 0.92rem; color: #e4e4e7;"><span style="color: #10b981; font-weight: bold;">✓</span> AI Resume Builder & 3 ATS templates</li>
+                <li style="display: flex; align-items: center; gap: 10px; font-size: 0.92rem; color: #e4e4e7;"><span style="color: #10b981; font-weight: bold;">✓</span> ATS Resume Analysis with usage limits</li>
+                <li style="display: flex; align-items: center; gap: 10px; font-size: 0.92rem; color: #e4e4e7;"><span style="color: #10b981; font-weight: bold;">✓</span> AI Mock Interviews with usage limits</li>
+                <li style="display: flex; align-items: center; gap: 10px; font-size: 0.92rem; color: #e4e4e7;"><span style="color: #10b981; font-weight: bold;">✓</span> Placement preparation resources</li>
+                <li style="display: flex; align-items: center; gap: 10px; font-size: 0.92rem; color: #e4e4e7;"><span style="color: #10b981; font-weight: bold;">✓</span> Student progress tracking</li>
+                <li style="display: flex; align-items: center; gap: 10px; font-size: 0.92rem; color: #e4e4e7;"><span style="color: #10b981; font-weight: bold;">✓</span> Personalized learning roadmaps</li>
+                <li style="display: flex; align-items: center; gap: 10px; font-size: 0.92rem; color: #e4e4e7;"><span style="color: #10b981; font-weight: bold;">✓</span> Access to external coding practice platforms</li>
+            </ul>
+
+            <div style="background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(139, 92, 246, 0.25); border-radius: 10px; padding: 14px 18px; margin-bottom: 24px; font-size: 0.85rem; color: #c4b5fd;">
+                ⚡ <strong>Fair Usage Policy:</strong> Every registered student receives 50 free AI credits to explore AI Career Guidance, AI Code Optimization, and Mock Interviews with periodic auto-replenishment.
+            </div>
+
+            {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}" class="btn btn-primary btn-block btn-lg" style="padding: 16px; font-size: 1.1rem; justify-content: center; font-weight: 700; border-radius: 12px;">
+                    GET STARTED FOR FREE →
+                </a>
+            {% else %}
+                <a href="{% url 'register' %}" class="btn btn-primary btn-block btn-lg" style="padding: 16px; font-size: 1.1rem; justify-content: center; font-weight: 700; border-radius: 12px;">
+                    GET STARTED FOR FREE
+                </a>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- FAQ SECTION -->
+    <section id="faq" style="max-width: 900px; margin: 60px auto; padding: 0 20px;">
+        <div style="text-align: center; margin-bottom: 40px;">
+            <span class="badge badge-primary">Frequently Asked Questions</span>
+            <h2 style="font-size: 2.2rem; margin-top: 12px;">Got Questions? We've Got Answers.</h2>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="card" style="padding: 20px;">
+                <h4 style="color: var(--text-primary); margin-bottom: 6px;">How does CareerVerse AI help me get placed?</h4>
+                <p style="margin: 0; font-size: 0.92rem;">CareerVerse brings aptitude practice, coding IDE with test cases, 28+ company hiring patterns, an ATS resume creator, and AI mock interviews into one unified dashboard—saving you from switching across multiple platforms.</p>
+            </div>
+            <div class="card" style="padding: 20px;">
+                <h4 style="color: var(--text-primary); margin-bottom: 6px;">Is CareerVerse AI really 100% free for students?</h4>
+                <p style="margin: 0; font-size: 0.92rem;">Yes! We believe quality placement preparation should be accessible to all college students. The 100+ company guides, multi-language coding practice, 100+ aptitude questions, ATS resume builder, and AI mentors are free without any subscriptions or credit cards.</p>
+            </div>
+            <div class="card" style="padding: 20px;">
+                <h4 style="color: var(--text-primary); margin-bottom: 6px;">Can I practice coding directly in my browser?</h4>
+                <p style="margin: 0; font-size: 0.92rem;">Yes! The built-in code runner supports Python with instant test case execution and runtime tracking directly in your browser.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer style="background: var(--bg-surface); border-top: 1px solid var(--border-color); padding: 48px 20px; text-align: center; margin-top: 80px;">
+        <div class="logo-badge" style="justify-content: center; margin-bottom: 16px;">
+            <div class="logo-icon" style="width: 32px; height: 32px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon></svg>
+            </div>
+            <span>CareerVerse AI</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+            One Platform. Every Step Towards Your Dream Job.
+        </p>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;">
+            © 2026 CareerVerse AI Inc. Built for Students, Powered by AI.
+        </p>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

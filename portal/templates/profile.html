@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Profile – CareerVerse AI{% endblock %}
+{% block breadcrumb %}Student Profile{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+
+    <!-- PROFILE HERO BANNER -->
+    <div class="card" style="margin-bottom: 28px; padding: 32px; background: linear-gradient(135deg, rgba(79, 70, 229, 0.08) 0%, rgba(56, 189, 248, 0.06) 100%);">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 24px;">
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <div class="avatar-circle" style="width: 80px; height: 80px; font-size: 2rem; box-shadow: var(--shadow-md);">
+                    {% if profile.profile_picture %}
+                        <img src="{{ profile.profile_picture.url }}" id="avatar-preview-img" alt="{{ user.username }}">
+                    {% else %}
+                        <span id="avatar-fallback">{{ user.username|make_list|first|upper }}</span>
+                        <img src="" id="avatar-preview-img" style="display: none;" alt="Preview">
+                    {% endif %}
+                </div>
+
+                <div>
+                    <h1 style="font-size: 1.8rem; margin: 0 0 4px; color: var(--text-primary);">
+                        {{ user.first_name|default:user.username }}
+                    </h1>
+                    <p style="margin: 0; color: var(--text-secondary); font-size: 0.95rem;">
+                        {{ profile.college|default:"University Student" }} • {{ profile.department|default:"Computer Science" }}
+                    </p>
+                    <span class="badge badge-primary" style="margin-top: 8px;">Batch of {{ profile.graduation_year|default:"2026" }}</span>
+                </div>
+            </div>
+
+            <!-- PROFILE COMPLETION METER -->
+            <div style="background: var(--bg-surface); padding: 18px 24px; border-radius: var(--radius-md); border: 1px solid var(--border-color); text-align: right;">
+                <div style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;">
+                    Profile Completeness
+                </div>
+                <div style="font-size: 2rem; font-weight: 800; color: var(--primary);">
+                    {{ completion }}%
+                </div>
+                <div style="width: 140px; height: 6px; background: var(--bg-subtle); border-radius: 10px; overflow: hidden; margin-top: 6px;">
+                    <div style="width: {{ completion }}%; height: 100%; background: var(--primary-gradient);"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROFILE EDIT FORM -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <span>Edit Profile Information</span>
+            </div>
+            <a href="{% url 'change_password' %}" class="btn btn-outline btn-sm">
+                🔒 Change Password
+            </a>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" name="full_name" class="form-control"
+                           value="{{ user.first_name|default:user.username }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" name="email" class="form-control"
+                           value="{{ user.email }}" required>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label class="form-label">College / University</label>
+                    {{ form.college }}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Department / Branch</label>
+                    {{ form.department }}
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label class="form-label">CGPA / Percentage</label>
+                    {{ form.cgpa }}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Graduation Year</label>
+                    {{ form.graduation_year }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Technical Skills (Comma Separated)</label>
+                {{ form.skills }}
+                <span class="form-help">e.g. Python, SQL, C++, React, Django, Machine Learning, Git</span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Interests & Career Passions</label>
+                {{ form.interests }}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Profile Picture (Avatar)</label>
+                {{ form.profile_picture }}
+                <span class="form-help">Upload a JPG or PNG picture. Preview will update immediately.</span>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+                <a href="{% url 'dashboard' %}" class="btn btn-outline">Cancel</a>
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <span>Save Profile Changes</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Live image preview
+    const picInput = document.querySelector('input[type="file"]');
+    if (picInput) {
+        picInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (re) => {
+                    const preview = document.getElementById('avatar-preview-img');
+                    const fallback = document.getElementById('avatar-fallback');
+                    if (preview) {
+                        preview.src = re.target.result;
+                        preview.style.display = 'block';
+                    }
+                    if (fallback) fallback.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+</script>
+{% endblock %}

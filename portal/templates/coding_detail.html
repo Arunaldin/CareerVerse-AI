@@ -1,0 +1,618 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ problem.title }} – Coding Workbench – CareerVerse AI{% endblock %}
+{% block breadcrumb %}<a href="{% url 'coding' %}">Coding</a> / {{ problem.title }}{% endblock %}
+
+{% block extra_head %}
+<!-- CodeMirror Syntax Highlighting & Dark Theme -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/go/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/php/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/sql/sql.min.js"></script>
+
+<style>
+    .coding-workbench {
+        display: grid;
+        grid-template-columns: 1fr 1.15fr;
+        gap: 24px;
+        align-items: start;
+    }
+    @media (max-width: 992px) {
+        .coding-workbench {
+            grid-template-columns: 1fr;
+        }
+    }
+    .problem-panel {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        padding: 24px;
+        max-height: 85vh;
+        overflow-y: auto;
+    }
+    .editor-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        background: var(--bg-surface);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        padding: 18px;
+    }
+    .CodeMirror {
+        height: 420px;
+        font-family: 'JetBrains Mono', 'Fira Code', monospace;
+        font-size: 0.92rem;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border-color);
+    }
+    .lang-select-box {
+        background: var(--bg-subtle);
+        border: 1px solid var(--border-color);
+        color: var(--text-primary);
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        outline: none;
+        font-size: 0.88rem;
+    }
+    .lang-select-box:focus {
+        border-color: var(--primary);
+    }
+    .test-case-card {
+        padding: 10px 14px;
+        border-radius: var(--radius-sm);
+        background: var(--bg-subtle);
+        border-left: 4px solid var(--border-color);
+        margin-bottom: 8px;
+        font-family: var(--font-code);
+        font-size: 0.85rem;
+    }
+    .test-case-card.passed {
+        border-left-color: #10b981;
+        background: rgba(16, 185, 129, 0.08);
+    }
+    .test-case-card.failed {
+        border-left-color: #ef4444;
+        background: rgba(239, 68, 68, 0.08);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="coding-workbench">
+
+    <!-- LEFT: PROBLEM DESCRIPTION & SPECS -->
+    <div class="problem-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <span class="badge badge-subtle">{{ problem.get_category_display }}</span>
+                {% if is_solved %}
+                    <span class="badge badge-success">✓ Solved</span>
+                {% endif %}
+            </div>
+            <span class="badge {% if problem.difficulty == 'Easy' %}badge-easy{% elif problem.difficulty == 'Medium' %}badge-medium{% else %}badge-hard{% endif %}">
+                {{ problem.difficulty }}
+            </span>
+        </div>
+
+        <h1 style="font-size: 1.8rem; margin-bottom: 12px; color: var(--text-primary);">
+            {{ problem.title }}
+        </h1>
+
+        <div style="font-size: 0.95rem; line-height: 1.7; color: var(--text-primary); margin-bottom: 24px; white-space: pre-line;">
+            {{ problem.description }}
+        </div>
+
+        {% if problem.sample_input %}
+            <div style="margin-bottom: 20px;">
+                <h4 style="margin-bottom: 8px; color: var(--text-primary);">Example Input:</h4>
+                <pre style="background: var(--bg-subtle); padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-family: var(--font-code); font-size: 0.88rem; overflow-x: auto;">{{ problem.sample_input }}</pre>
+            </div>
+        {% endif %}
+
+        {% if problem.sample_output %}
+            <div style="margin-bottom: 20px;">
+                <h4 style="margin-bottom: 8px; color: var(--text-primary);">Example Output:</h4>
+                <pre style="background: var(--bg-subtle); padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-family: var(--font-code); font-size: 0.88rem; overflow-x: auto;">{{ problem.sample_output }}</pre>
+            </div>
+        {% endif %}
+
+        {% if problem.constraints %}
+            <div style="margin-bottom: 20px;">
+                <h4 style="margin-bottom: 8px; color: var(--text-primary);">Constraints:</h4>
+                <pre style="background: var(--bg-subtle); padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-family: var(--font-code); font-size: 0.85rem; color: var(--text-secondary);">{{ problem.constraints }}</pre>
+            </div>
+        {% endif %}
+
+        <!-- COMPLEXITY ANALYSIS BADGES -->
+        <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+            <div style="background: rgba(79, 70, 229, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); padding: 8px 12px; border-radius: var(--radius-sm); font-size: 0.82rem;">
+                ⏱️ <strong>Time Complexity:</strong> <code style="color: var(--primary);">{{ problem.time_complexity|default:"O(N)" }}</code>
+            </div>
+            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 8px 12px; border-radius: var(--radius-sm); font-size: 0.82rem;">
+                💾 <strong>Space Complexity:</strong> <code style="color: #10b981;">{{ problem.space_complexity|default:"O(1)" }}</code>
+            </div>
+        </div>
+
+        <!-- PROGRESSIVE HINTS -->
+        {% if problem.solution_hint %}
+            <details style="margin-bottom: 16px; background: var(--bg-subtle); padding: 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                <summary style="font-weight: 700; cursor: pointer; color: var(--primary);">
+                    💡 Progressive Hint (Click to Reveal)
+                </summary>
+                <p style="margin-top: 10px; font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 0;">
+                    {{ problem.solution_hint }}
+                </p>
+            </details>
+        {% endif %}
+
+        <!-- STEP-BY-STEP EXPLANATION & LOGIC -->
+        {% if problem.explanation %}
+            <details style="margin-bottom: 16px; background: rgba(99, 102, 241, 0.05); padding: 16px; border-radius: var(--radius-md); border: 1px solid rgba(99, 102, 241, 0.25);">
+                <summary style="font-weight: 700; cursor: pointer; color: var(--primary);">
+                    📖 Step-by-Step Logic & Explanation
+                </summary>
+                <div style="margin-top: 12px; font-size: 0.92rem; color: var(--text-primary); line-height: 1.7; white-space: pre-line;">
+                    {{ problem.explanation }}
+                </div>
+            </details>
+        {% endif %}
+
+        <!-- MULTI-LANGUAGE OFFICIAL SOLUTIONS (PYTHON, JAVA, C++, C) -->
+        {% if problem.solution_python or problem.solution_java or problem.solution_cpp or problem.solution_c %}
+            <details style="margin-bottom: 20px; background: var(--bg-subtle); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                <summary style="font-weight: 700; cursor: pointer; color: #10b981;">
+                    ⚡ View Complete Multi-Language Solutions (Python, Java, C, C++)
+                </summary>
+                
+                <div style="margin-top: 14px;">
+                    <!-- Language Solution Tabs -->
+                    <div style="display: flex; gap: 6px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-bottom: 12px; flex-wrap: wrap;">
+                        {% if problem.solution_python %}
+                            <button type="button" class="btn btn-sm btn-outline active" onclick="showSolutionTab('py', this)">Python</button>
+                        {% endif %}
+                        {% if problem.solution_java %}
+                            <button type="button" class="btn btn-sm btn-outline" onclick="showSolutionTab('java', this)">Java</button>
+                        {% endif %}
+                        {% if problem.solution_cpp %}
+                            <button type="button" class="btn btn-sm btn-outline" onclick="showSolutionTab('cpp', this)">C++</button>
+                        {% endif %}
+                        {% if problem.solution_c %}
+                            <button type="button" class="btn btn-sm btn-outline" onclick="showSolutionTab('c', this)">C</button>
+                        {% endif %}
+                    </div>
+
+                    <!-- Code Blocks -->
+                    {% if problem.solution_python %}
+                        <div id="sol-py" class="solution-content">
+                            <div style="display: flex; justify-content: flex-end; margin-bottom: 6px;">
+                                <button type="button" class="btn btn-sm btn-subtle" onclick="copyToEditor('{{ problem.solution_python|escapejs }}', 'python')">📋 Copy to Editor</button>
+                            </div>
+                            <pre style="background: var(--bg-surface); padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-family: var(--font-code); font-size: 0.85rem; overflow-x: auto;">{{ problem.solution_python }}</pre>
+                        </div>
+                    {% endif %}
+                    {% if problem.solution_java %}
+                        <div id="sol-java" class="solution-content" style="display: none;">
+                            <div style="display: flex; justify-content: flex-end; margin-bottom: 6px;">
+                                <button type="button" class="btn btn-sm btn-subtle" onclick="copyToEditor('{{ problem.solution_java|escapejs }}', 'java')">📋 Copy to Editor</button>
+                            </div>
+                            <pre style="background: var(--bg-surface); padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-family: var(--font-code); font-size: 0.85rem; overflow-x: auto;">{{ problem.solution_java }}</pre>
+                        </div>
+                    {% endif %}
+                    {% if problem.solution_cpp %}
+                        <div id="sol-cpp" class="solution-content" style="display: none;">
+                            <div style="display: flex; justify-content: flex-end; margin-bottom: 6px;">
+                                <button type="button" class="btn btn-sm btn-subtle" onclick="copyToEditor('{{ problem.solution_cpp|escapejs }}', 'cpp')">📋 Copy to Editor</button>
+                            </div>
+                            <pre style="background: var(--bg-surface); padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-family: var(--font-code); font-size: 0.85rem; overflow-x: auto;">{{ problem.solution_cpp }}</pre>
+                        </div>
+                    {% endif %}
+                    {% if problem.solution_c %}
+                        <div id="sol-c" class="solution-content" style="display: none;">
+                            <div style="display: flex; justify-content: flex-end; margin-bottom: 6px;">
+                                <button type="button" class="btn btn-sm btn-subtle" onclick="copyToEditor('{{ problem.solution_c|escapejs }}', 'c')">📋 Copy to Editor</button>
+                            </div>
+                            <pre style="background: var(--bg-surface); padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-family: var(--font-code); font-size: 0.85rem; overflow-x: auto;">{{ problem.solution_c }}</pre>
+                        </div>
+                    {% endif %}
+                </div>
+            </details>
+        {% endif %}
+
+        {% if past_submissions %}
+            <div style="margin-top: 24px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+                <h4 style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 10px; text-transform: uppercase;">Recent Submissions</h4>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    {% for sub in past_submissions %}
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--bg-subtle); border-radius: var(--radius-sm); font-size: 0.82rem;">
+                            <span><strong>{{ sub.language|upper|default:"PYTHON" }}</strong> • {{ sub.created_at|date:"M d, H:i" }}</span>
+                            <span class="badge {% if sub.status == 'Passed' %}badge-success{% else %}badge-warning{% endif %}">
+                                {{ sub.status }} ({{ sub.passed_count }}/{{ sub.total_tests }})
+                            </span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- RIGHT: INTERACTIVE CODE EDITOR & TERMINAL CONSOLE -->
+    <div class="editor-panel">
+        
+        <!-- EDITOR TOOLBAR -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <!-- DYNAMIC LANGUAGE SELECTION DROPDOWN -->
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <label for="language-select" style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin: 0;">
+                    Language:
+                </label>
+                <select id="language-select" class="lang-select-box" onchange="switchLanguage(this.value)">
+                    <option value="python" {% if last_language == 'python' %}selected{% endif %}>🐍 Python</option>
+                    <option value="java" {% if last_language == 'java' %}selected{% endif %}>☕ Java</option>
+                    <option value="c" {% if last_language == 'c' %}selected{% endif %}>⚙️ C</option>
+                    <option value="cpp" {% if last_language == 'cpp' %}selected{% endif %}>⚡ C++</option>
+                    <option value="javascript" {% if last_language == 'javascript' %}selected{% endif %}>🟨 JavaScript</option>
+                    <option value="csharp" {% if last_language == 'csharp' %}selected{% endif %}>🔷 C#</option>
+                    <option value="go" {% if last_language == 'go' %}selected{% endif %}>🐹 Go</option>
+                    <option value="php" {% if last_language == 'php' %}selected{% endif %}>🐘 PHP</option>
+                    {% if problem.category == 'sql' %}
+                        <option value="sql" {% if last_language == 'sql' %}selected{% endif %}>🗄️ SQL</option>
+                    {% endif %}
+                </select>
+                <span id="runtime-status-tag" style="font-size: 0.75rem; color: #10b981; font-weight: 600;">● Ready</span>
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <button type="button" class="btn btn-outline btn-sm" onclick="resetCurrentCode()" title="Reset code to initial template">
+                    Reset
+                </button>
+                <button type="button" class="btn btn-outline btn-sm" id="run-btn" onclick="executeSolution('run')" style="border-color: var(--primary); color: var(--primary);">
+                    <span>▶ Run Code</span>
+                </button>
+                <button type="button" class="btn btn-primary btn-sm" id="submit-btn" onclick="executeSolution('submit')">
+                    <span>🚀 Submit</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- CODE TEXTAREA (Target for CodeMirror) -->
+        <textarea id="code-editor" class="code-textarea" spellcheck="false">{{ last_code }}</textarea>
+
+        <!-- CUSTOM INPUT TOGGLE -->
+        <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 10px 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label style="margin: 0; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                    <input type="checkbox" id="custom-input-toggle" onchange="toggleCustomInput(this.checked)">
+                    <span>Custom Test Input (stdin)</span>
+                </label>
+                <span style="font-size: 0.75rem; color: var(--text-muted);">Optional</span>
+            </div>
+            <div id="custom-input-container" style="display: none; margin-top: 10px;">
+                <textarea id="custom-input-text" rows="3" placeholder="Enter custom inputs line by line (e.g. 5&#10;1 2 3 4 5)" style="width: 100%; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary); font-family: var(--font-code); font-size: 0.85rem; padding: 8px;"></textarea>
+            </div>
+        </div>
+
+        <!-- EXECUTION CONSOLE & TEST RESULTS -->
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-size: 0.78rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">
+                    Output Terminal & Test Results:
+                </div>
+                <div id="execution-meta" style="font-size: 0.8rem; color: var(--text-secondary);"></div>
+            </div>
+            <div id="console-output" class="console-output" style="min-height: 160px; max-height: 320px; overflow-y: auto;">
+Click "Run Code" to test with custom/sample input, or "Submit" to run against all test cases.
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // -------------------------------------------------------------------------
+    // MULTI-LANGUAGE STARTER TEMPLATES
+    // -------------------------------------------------------------------------
+    const problemTitle = `{{ problem.title|escapejs }}`;
+    const initialCode = `{{ last_code|escapejs }}`;
+    const problemCategory = `{{ problem.category|escapejs }}`;
+    const problemId = {{ problem.id }};
+
+    const starterTemplates = {
+        python: initialCode && initialCode.trim() ? initialCode : `# Problem: ${problemTitle}\n# Write your solution below\n\ndef solution():\n    # Write your code here\n    pass\n\nif __name__ == '__main__':\n    solution()\n`,
+        java: `// Problem: ${problemTitle}\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        // Write your solution here\n        \n    }\n}\n`,
+        c: `// Problem: ${problemTitle}\n#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    // Write your solution here\n    \n    return 0;\n}\n`,
+        cpp: `// Problem: ${problemTitle}\n#include <iostream>\n#include <vector>\n#include <string>\n#include <algorithm>\n\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    // Write your solution here\n\n    return 0;\n}\n`,
+        javascript: `// Problem: ${problemTitle}\nconst fs = require('fs');\n\nfunction solve() {\n    // Write your solution here\n    console.log("Ready");\n}\n\nsolve();\n`,
+        csharp: `// Problem: ${problemTitle}\nusing System;\nusing System.Collections.Generic;\n\nclass Program {\n    static void Main(string[] args) {\n        // Write your solution here\n        \n    }\n}\n`,
+        go: `// Problem: ${problemTitle}\npackage main\n\nimport (\n    "fmt"\n)\n\nfunc main() {\n    // Write your solution here\n    fmt.Println("Solution in Go")\n}\n`,
+        php: `<?php\n// Problem: ${problemTitle}\n\nfunction solution() {\n    // Write your solution here\n    echo "Solution in PHP\\n";\n}\n\nsolution();\n?>\n`,
+        sql: `-- Problem: ${problemTitle}\n-- Write your SQL query below\nSELECT * FROM Employee;\n`
+    };
+
+    // Mode mappings for CodeMirror
+    const modeMap = {
+        python: { name: 'python', version: 3 },
+        java: 'text/x-java',
+        c: 'text/x-csrc',
+        cpp: 'text/x-c++src',
+        javascript: 'javascript',
+        csharp: 'text/x-csharp',
+        go: 'go',
+        php: 'php',
+        sql: 'text/x-sql'
+    };
+
+    // Buffer to remember student's code per language during the session
+    const userCodeCache = {};
+    let currentLanguage = '{{ last_language|default:"python" }}';
+    userCodeCache[currentLanguage] = initialCode;
+
+    // Initialize CodeMirror editor
+    let editor = null;
+    document.addEventListener('DOMContentLoaded', () => {
+        const textarea = document.getElementById('code-editor');
+        editor = CodeMirror.fromTextArea(textarea, {
+            lineNumbers: true,
+            mode: modeMap[currentLanguage] || 'python',
+            theme: 'dracula',
+            tabSize: 4,
+            indentUnit: 4,
+            lineWrapping: true,
+            matchBrackets: true,
+            autoCloseBrackets: true
+        });
+
+        // Set initial content
+        editor.setValue(initialCode || starterTemplates[currentLanguage] || starterTemplates.python);
+    });
+
+    // -------------------------------------------------------------------------
+    // DYNAMIC LANGUAGE SWITCHING WITHOUT PAGE RELOAD
+    // -------------------------------------------------------------------------
+    function switchLanguage(newLang) {
+        if (!editor) return;
+
+        // 1. Save current language's typed code in memory buffer
+        userCodeCache[currentLanguage] = editor.getValue();
+
+        // 2. Switch to new language
+        currentLanguage = newLang;
+
+        // 3. Update CodeMirror mode / syntax highlighting
+        const mode = modeMap[newLang] || 'python';
+        editor.setOption('mode', mode);
+
+        // 4. Restore student's previously typed code if exists, else load starter template
+        if (userCodeCache[newLang] && userCodeCache[newLang].trim()) {
+            editor.setValue(userCodeCache[newLang]);
+        } else {
+            editor.setValue(starterTemplates[newLang] || `// Write your ${newLang} code here\n`);
+        }
+
+        // 5. Update status tag
+        const tag = document.getElementById('runtime-status-tag');
+        if (tag) {
+            tag.innerText = `● ${newLang.toUpperCase()} Ready`;
+        }
+
+        editor.focus();
+    }
+
+    // -------------------------------------------------------------------------
+    // MULTI-LANGUAGE SOLUTION TABS & COPY TO EDITOR
+    // -------------------------------------------------------------------------
+    function showSolutionTab(tabKey, btn) {
+        document.querySelectorAll('.solution-content').forEach(el => el.style.display = 'none');
+        const target = document.getElementById('sol-' + tabKey);
+        if (target) target.style.display = 'block';
+
+        btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    function copyToEditor(code, lang) {
+        if (!editor) return;
+        if (confirm(`Load official ${lang.toUpperCase()} solution into code editor?`)) {
+            // Also switch language dropdown if needed
+            const select = document.getElementById('language-select');
+            if (select) {
+                select.value = lang;
+                switchLanguage(lang);
+            }
+            editor.setValue(code);
+            userCodeCache[lang] = code;
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // RESET CODE BUTTON
+    // -------------------------------------------------------------------------
+    function resetCurrentCode() {
+        if (!editor) return;
+        if (confirm(`Reset the editor to original starter template for ${currentLanguage.toUpperCase()}?`)) {
+            const template = starterTemplates[currentLanguage] || '';
+            editor.setValue(template);
+            userCodeCache[currentLanguage] = template;
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // CUSTOM INPUT TOGGLE
+    // -------------------------------------------------------------------------
+    function toggleCustomInput(isChecked) {
+        const container = document.getElementById('custom-input-container');
+        if (container) {
+            container.style.display = isChecked ? 'block' : 'none';
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // CSRF HELPER
+    // -------------------------------------------------------------------------
+    function getCsrf() {
+        const name = 'csrftoken=';
+        const decoded = decodeURIComponent(document.cookie);
+        const parts = decoded.split(';');
+        for (let p of parts) {
+            let s = p.trim();
+            if (s.indexOf(name) === 0) return s.substring(name.length, s.length);
+        }
+        return '';
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.innerText = text || '';
+        return div.innerHTML;
+    }
+
+    // -------------------------------------------------------------------------
+    // RUN CODE & SUBMIT SOLUTION WORKFLOW
+    // -------------------------------------------------------------------------
+    async function executeSolution(action) {
+        const runBtn = document.getElementById('run-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const consoleOutput = document.getElementById('console-output');
+        const metaBox = document.getElementById('execution-meta');
+
+        const code = editor ? editor.getValue() : document.getElementById('code-editor').value;
+        const useCustom = document.getElementById('custom-input-toggle').checked;
+        const customInput = useCustom ? (document.getElementById('custom-input-text').value || '') : '';
+
+        if (!code || !code.trim()) {
+            alert('Please write some code before executing.');
+            return;
+        }
+
+        const isSubmit = (action === 'submit');
+        const targetBtn = isSubmit ? submitBtn : runBtn;
+        const originalHtml = targetBtn.innerHTML;
+
+        targetBtn.disabled = true;
+        targetBtn.innerHTML = `<span>⏳ ${isSubmit ? 'Grading...' : 'Running...'}</span>`;
+        consoleOutput.innerHTML = `<span style="color:#94a3b8;">🚀 Executing solution in <strong>${currentLanguage.toUpperCase()}</strong> environment...</span>`;
+        metaBox.innerText = '';
+
+        try {
+            const response = await fetch('/coding/run/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrf()
+                },
+                body: JSON.stringify({
+                    code: code,
+                    language: currentLanguage,
+                    problem_id: problemId,
+                    custom_input: customInput,
+                    action: action
+                })
+            });
+
+            const data = await response.json();
+            targetBtn.disabled = false;
+            targetBtn.innerHTML = originalHtml;
+
+            // Runtime metadata
+            metaBox.innerHTML = `<span style="color:var(--text-muted); font-size:0.8rem;">Lang: <strong>${(data.language || currentLanguage).toUpperCase()}</strong> • Time: <strong>${data.execution_time || 0}s</strong></span>`;
+
+            if (data.error && !data.success) {
+                consoleOutput.innerHTML = `
+                    <div style="background: rgba(239,68,68,0.12); border: 1px solid #ef4444; border-radius: var(--radius-sm); padding: 12px; margin-bottom: 10px;">
+                        <div style="color: #ef4444; font-weight: 700; margin-bottom: 6px;">❌ Compilation / Runtime Error:</div>
+                        <pre style="margin: 0; color: #f87171; font-family: var(--font-code); font-size: 0.88rem; white-space: pre-wrap;">${escapeHtml(data.error)}</pre>
+                    </div>
+                `;
+                return;
+            }
+
+            let resultHtml = '';
+
+            // Header status banner
+            if (isSubmit) {
+                if (data.status === 'Passed') {
+                    resultHtml += `
+                        <div style="background: rgba(16,185,129,0.15); border: 1px solid #10b981; border-radius: var(--radius-sm); padding: 14px; margin-bottom: 12px;">
+                            <div style="font-size: 1.1rem; font-weight: 800; color: #10b981;">🎉 Submission Accepted!</div>
+                            <div style="font-size: 0.88rem; color: var(--text-primary); margin-top: 4px;">
+                                All ${data.passed_count}/${data.total_tests} test cases passed. Status recorded in your placement profile.
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    resultHtml += `
+                        <div style="background: rgba(239,68,68,0.12); border: 1px solid #ef4444; border-radius: var(--radius-sm); padding: 14px; margin-bottom: 12px;">
+                            <div style="font-size: 1.1rem; font-weight: 800; color: #ef4444;">❌ Submission Failed (${data.passed_count}/${data.total_tests} Tests Passed)</div>
+                            <div style="font-size: 0.88rem; color: var(--text-primary); margin-top: 4px;">
+                                Inspect the failing test cases below and refine your solution.
+                            </div>
+                        </div>
+                    `;
+                }
+            } else {
+                resultHtml += `
+                    <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 10px;">
+                        <span class="badge badge-success">✓ Code Executed</span>
+                        <span style="font-size: 0.85rem; color: var(--text-secondary);">${data.passed_count}/${data.total_tests} test case(s) satisfied</span>
+                    </div>
+                `;
+            }
+
+            // Standard Output
+            if (data.output) {
+                resultHtml += `
+                    <div style="margin-bottom: 14px;">
+                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">Standard Output:</div>
+                        <pre style="background: var(--bg-surface); padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-family: var(--font-code); font-size: 0.88rem; margin: 0; white-space: pre-wrap;">${escapeHtml(data.output)}</pre>
+                    </div>
+                `;
+            }
+
+            // Test Cases Breakdown
+            if (data.test_results && data.test_results.length > 0) {
+                resultHtml += `
+                    <div>
+                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">Test Cases Results:</div>
+                `;
+
+                data.test_results.forEach(tc => {
+                    const statusClass = tc.passed ? 'passed' : 'failed';
+                    const icon = tc.passed ? '✅' : '❌';
+                    resultHtml += `
+                        <div class="test-case-card ${statusClass}">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                <strong>${icon} Case ${tc.index}</strong>
+                                <span class="badge ${tc.passed ? 'badge-success' : 'badge-danger'}" style="font-size: 0.72rem;">
+                                    ${tc.passed ? 'Passed' : 'Failed'}
+                                </span>
+                            </div>
+                            <div style="color: var(--text-secondary);">Input: <code>${escapeHtml(tc.input || 'None')}</code></div>
+                            <div style="color: var(--text-secondary);">Expected: <code>${escapeHtml(tc.expected || 'None')}</code></div>
+                            ${tc.actual ? `<div style="color: var(--text-secondary);">Actual: <code>${escapeHtml(tc.actual)}</code></div>` : ''}
+                        </div>
+                    `;
+                });
+
+                resultHtml += `</div>`;
+            }
+
+            consoleOutput.innerHTML = resultHtml;
+        } catch (err) {
+            targetBtn.disabled = false;
+            targetBtn.innerHTML = originalHtml;
+            consoleOutput.innerHTML = `<span style="color:#ef4444; font-weight:bold;">Network or Server Error: ${escapeHtml(err.message)}</span>`;
+        }
+    }
+</script>
+{% endblock %}

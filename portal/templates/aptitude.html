@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block title %}Aptitude Practice & Quizzes – CareerVerse AI{% endblock %}
+{% block breadcrumb %}Aptitude Preparation{% endblock %}
+
+{% block content %}
+<div class="quiz-container">
+
+    <!-- HEADER -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+        <div>
+            <span class="badge badge-primary">Placement Aptitude Suite</span>
+            <h1 style="font-size: 2rem; margin-top: 6px;">Quantitative & Reasoning Practice</h1>
+            <p style="margin: 0;">Comprehensive high-yield questions covering TCS, Infosys, and Cognizant patterns.</p>
+        </div>
+
+        <!-- COUNTDOWN TIMER -->
+        <div style="background: var(--bg-surface); padding: 10px 18px; border-radius: var(--radius-md); border: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--primary);"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+            <div>
+                <div style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Time Remaining</div>
+                <div id="quiz-countdown" data-seconds="600" style="font-size: 1.25rem; font-weight: 800; font-family: var(--font-code); color: var(--text-primary);">
+                    10:00
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CATEGORY FILTER TABS -->
+    <div style="display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap;">
+        <a href="?category=all" class="btn btn-sm {% if selected_category == 'all' %}btn-primary{% else %}btn-outline{% endif %}">
+            All Categories ({{ total_count }})
+        </a>
+        <a href="?category=quantitative" class="btn btn-sm {% if selected_category == 'quantitative' %}btn-primary{% else %}btn-outline{% endif %}">
+            📐 Quantitative Aptitude
+        </a>
+        <a href="?category=logical" class="btn btn-sm {% if selected_category == 'logical' %}btn-primary{% else %}btn-outline{% endif %}">
+            🧩 Logical Reasoning
+        </a>
+        <a href="?category=verbal" class="btn btn-sm {% if selected_category == 'verbal' %}btn-primary{% else %}btn-outline{% endif %}">
+            📖 Verbal Ability
+        </a>
+    </div>
+
+    <!-- QUESTIONS FORM -->
+    <form method="POST" id="quiz-form">
+        {% csrf_token %}
+
+        {% if questions %}
+            {% for q in questions %}
+                <div class="question-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                        <span class="badge badge-subtle">Q{{ forloop.counter }} • {{ q.topic }}</span>
+                        <span class="badge {% if q.difficulty == 'Easy' %}badge-easy{% elif q.difficulty == 'Medium' %}badge-medium{% else %}badge-hard{% endif %}">
+                            {{ q.difficulty }}
+                        </span>
+                    </div>
+
+                    <h3 style="font-size: 1.1rem; line-height: 1.5; margin-bottom: 18px; color: var(--text-primary);">
+                        {{ q.question_text }}
+                    </h3>
+
+                    <!-- RADIO OPTIONS -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <label class="option-label">
+                            <input type="radio" name="q_{{ q.id }}" value="A">
+                            <span><strong>A.</strong> {{ q.option_a }}</span>
+                        </label>
+                        <label class="option-label">
+                            <input type="radio" name="q_{{ q.id }}" value="B">
+                            <span><strong>B.</strong> {{ q.option_b }}</span>
+                        </label>
+                        <label class="option-label">
+                            <input type="radio" name="q_{{ q.id }}" value="C">
+                            <span><strong>C.</strong> {{ q.option_c }}</span>
+                        </label>
+                        <label class="option-label">
+                            <input type="radio" name="q_{{ q.id }}" value="D">
+                            <span><strong>D.</strong> {{ q.option_d }}</span>
+                        </label>
+                    </div>
+                </div>
+            {% endfor %}
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 28px;">
+                <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;">
+                    Completed your answers? Press Submit Test to evaluate score.
+                </p>
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <span>Submit & View Results 🎯</span>
+                </button>
+            </div>
+        {% else %}
+            <!-- FALLBACK DEFAULT 3 QUESTIONS -->
+            <div class="question-card">
+                <span class="badge badge-subtle">Q1 • Percentages</span>
+                <h3 style="font-size: 1.1rem; margin-top: 10px;">What is 20% of 150?</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <label class="option-label"><input type="radio" name="q1" value="20"> <span>A. 20</span></label>
+                    <label class="option-label"><input type="radio" name="q1" value="30"> <span>B. 30</span></label>
+                    <label class="option-label"><input type="radio" name="q1" value="40"> <span>C. 40</span></label>
+                    <label class="option-label"><input type="radio" name="q1" value="50"> <span>D. 50</span></label>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <span class="badge badge-subtle">Q2 • Speed Math</span>
+                <h3 style="font-size: 1.1rem; margin-top: 10px;">If 5 × 6 = ?</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <label class="option-label"><input type="radio" name="q2" value="25"> <span>A. 25</span></label>
+                    <label class="option-label"><input type="radio" name="q2" value="30"> <span>B. 30</span></label>
+                    <label class="option-label"><input type="radio" name="q2" value="35"> <span>C. 35</span></label>
+                    <label class="option-label"><input type="radio" name="q2" value="40"> <span>D. 40</span></label>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <span class="badge badge-subtle">Q3 • Averages</span>
+                <h3 style="font-size: 1.1rem; margin-top: 10px;">What is the average of 10, 20 and 30?</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <label class="option-label"><input type="radio" name="q3" value="15"> <span>A. 15</span></label>
+                    <label class="option-label"><input type="radio" name="q3" value="20"> <span>B. 20</span></label>
+                    <label class="option-label"><input type="radio" name="q3" value="25"> <span>C. 25</span></label>
+                    <label class="option-label"><input type="radio" name="q3" value="30"> <span>D. 30</span></label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg btn-block" style="margin-top: 20px;">
+                Submit Test
+            </button>
+        {% endif %}
+    </form>
+
+</div>
+{% endblock %}

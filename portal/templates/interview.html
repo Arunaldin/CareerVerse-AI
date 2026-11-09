@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Mock Interview Preparation – CareerVerse AI{% endblock %}
+{% block breadcrumb %}AI Mock Interview{% endblock %}
+
+{% block content %}
+<div style="max-width: 850px; margin: 0 auto;">
+
+    <!-- HEADER -->
+    <div style="text-align: center; margin-bottom: 32px;">
+        <span class="badge badge-primary">AI Interview Simulator</span>
+        <h1 style="font-size: 2.3rem; margin-top: 10px;">Simulate Live Technical & HR Interviews</h1>
+        <p>Get company-tailored questions, practice voice or text answers, and receive instant AI evaluation with model answers.</p>
+    </div>
+
+    <!-- MAIN FORM -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path></svg>
+                <span>Interview Session Parameters</span>
+            </div>
+            {% if profile %}
+                <button type="button" class="btn btn-outline btn-sm" id="autofill-interview-btn">
+                    ⚡ Auto-Fill From Profile
+                </button>
+            {% endif %}
+        </div>
+
+        <form method="POST" id="interview-form">
+            {% csrf_token %}
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px;">
+                <div class="form-group">
+                    <label class="form-label">Target Job Role <span style="color:var(--danger)">*</span></label>
+                    <input type="text" name="role" id="int-role" class="form-control"
+                           placeholder="e.g. Python Developer / Full Stack Engineer"
+                           value="Software Engineer" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Target Company <span style="color:var(--danger)">*</span></label>
+                    <input type="text" name="company" id="int-company" class="form-control"
+                           placeholder="e.g. TCS, Infosys, Amazon, Zoho"
+                           value="TCS" required>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px;">
+                <div class="form-group">
+                    <label class="form-label">Experience Level</label>
+                    <select name="experience" class="form-control">
+                        <option value="College Fresher (Entry Level)" selected>College Fresher (Entry Level)</option>
+                        <option value="Internship / Final Year">Internship / Final Year</option>
+                        <option value="1-2 Years Experience">1-2 Years Experience</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Interview Track</label>
+                    <select name="interview_type" class="form-control">
+                        <option value="Technical" selected>Technical Engineering & Algorithms</option>
+                        <option value="HR & Behavioral (STAR)">HR & Behavioral (STAR Framework)</option>
+                        <option value="Comprehensive (Technical + HR)">Comprehensive (Technical + HR)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Your Core Skills & Technologies</label>
+                <input type="text" name="skills" id="int-skills" class="form-control"
+                       placeholder="e.g. Python, SQL, Data Structures, Django, OOP"
+                       value="{{ profile.skills|default:'Python, SQL, DSA' }}">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg btn-block" id="submit-int-btn" style="margin-top: 10px;">
+                <span>🤖 Generate AI Interview Question Set & Simulation</span>
+            </button>
+        </form>
+    </div>
+
+    <!-- BENEFIT CARDS -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 32px;">
+        <div class="card" style="padding: 16px;">
+            <div style="font-size: 1.5rem; margin-bottom: 6px;">🎙️</div>
+            <strong style="color:var(--text-primary); display:block; margin-bottom:4px;">Speech-to-Text Support</strong>
+            <p style="font-size:0.85rem; margin:0;">Speak your answer aloud via microphone to mimic real interview pressure.</p>
+        </div>
+        <div class="card" style="padding: 16px;">
+            <div style="font-size: 1.5rem; margin-bottom: 6px;">⚡</div>
+            <strong style="color:var(--text-primary); display:block; margin-bottom:4px;">Real-Time AI Evaluation</strong>
+            <p style="font-size:0.85rem; margin:0;">Immediate scoring out of 10, strengths, missing points, and model answers.</p>
+        </div>
+        <div class="card" style="padding: 16px;">
+            <div style="font-size: 1.5rem; margin-bottom: 6px;">🏢</div>
+            <strong style="color:var(--text-primary); display:block; margin-bottom:4px;">Recruiter Pattern Sync</strong>
+            <p style="font-size:0.85rem; margin:0;">Questions calibrated specifically for TCS, Infosys, Zoho, Amazon patterns.</p>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const autofillBtn = document.getElementById('autofill-interview-btn');
+    if (autofillBtn) {
+        autofillBtn.addEventListener('click', () => {
+            document.getElementById('int-skills').value = "{{ profile.skills|default:'Python, SQL, DSA' }}";
+        });
+    }
+
+    const form = document.getElementById('interview-form');
+    const submitBtn = document.getElementById('submit-int-btn');
+    form.addEventListener('submit', () => {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<span>⏳ CareerVerse AI is preparing your personalized interview pack...</span>`;
+    });
+</script>
+{% endblock %}

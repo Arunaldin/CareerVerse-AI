@@ -1,0 +1,322 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ company.name }} Placement Guide & Preparation Roadmap – CareerVerse AI{% endblock %}
+{% block breadcrumb %}<a href="{% url 'placement' %}">Companies</a> / {{ company.name }}{% endblock %}
+
+{% block extra_head %}
+<style>
+    .verified-badge-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(16, 185, 129, 0.12);
+        color: #10b981;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+    }
+    .guidance-badge-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(245, 158, 11, 0.12);
+        color: #f59e0b;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+    }
+    .week-card {
+        background: var(--bg-subtle);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        padding: 18px;
+        margin-bottom: 14px;
+        border-left: 4px solid var(--primary);
+    }
+    .syllabus-tag {
+        display: inline-block;
+        padding: 6px 12px;
+        background: var(--bg-surface);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-sm);
+        font-size: 0.85rem;
+        color: var(--text-primary);
+        font-weight: 500;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="max-width: 1040px; margin: 0 auto;">
+
+    <!-- COMPANY HERO BANNER -->
+    <div class="card" style="border-top: 5px solid {{ company.accent_color }}; margin-bottom: 28px; padding: 32px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 20px;">
+            <div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                    <span class="badge badge-subtle">{{ company.category }}</span>
+                    {% if company.is_verified_criteria %}
+                        <span class="verified-badge-pill">✓ Verified Recruitment Criteria</span>
+                    {% else %}
+                        <span class="guidance-badge-pill">ℹ️ General Preparation Guidance</span>
+                    {% endif %}
+                </div>
+
+                <h1 style="font-size: 2.4rem; margin: 6px 0;">{{ company.name }}</h1>
+                <p style="font-size: 1.05rem; color: var(--text-muted); font-style: italic; margin-bottom: 12px;">
+                    "{{ company.tagline }}"
+                </p>
+
+                {% if company.verified_source %}
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                        Verified Source: <em>{{ company.verified_source }}</em>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="avatar-circle" style="background: {{ company.accent_color }}; width: 68px; height: 68px; font-size: 2rem;">
+                {{ company.name|make_list|first }}
+            </div>
+        </div>
+
+        <!-- ELIGIBILITY & SALARY MATRIX -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; background: var(--bg-subtle); padding: 18px; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-top: 20px;">
+            <div>
+                <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Fresher Package</span>
+                <strong style="display: block; font-size: 1.15rem; color: var(--text-primary); margin-top: 4px;">{{ company.package_range }}</strong>
+            </div>
+            <div>
+                <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Min CGPA Cutoff</span>
+                <strong style="display: block; font-size: 1.15rem; color: var(--text-primary); margin-top: 4px;">{{ company.eligibility_cgpa }} Minimum</strong>
+            </div>
+            <div>
+                <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Eligible Branches</span>
+                <strong style="display: block; font-size: 0.92rem; color: var(--text-primary); margin-top: 4px;">{{ company.eligible_branches }}</strong>
+            </div>
+            <div>
+                <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Backlog Policy</span>
+                <strong style="display: block; font-size: 0.92rem; color: var(--text-primary); margin-top: 4px;">{{ company.backlogs_allowed }}</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- SELECTION PROCESS & ROUNDS -->
+    <div class="card" style="margin-bottom: 28px;">
+        <div class="card-header">
+            <div class="card-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                <span>Recruitment & Selection Process for {{ company.name }}</span>
+            </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+            {% for r in company.selection_rounds %}
+                <div style="display: flex; gap: 18px; padding: 16px; background: var(--bg-subtle); border-radius: var(--radius-md); border-left: 4px solid {{ company.accent_color }};">
+                    <div style="font-size: 1.4rem; font-weight: 800; color: {{ company.accent_color }}; min-width: 32px;">
+                        0{{ forloop.counter }}
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; flex-wrap: wrap;">
+                            <strong style="font-size: 1.05rem; color: var(--text-primary);">{{ r.name }}</strong>
+                            <span class="badge badge-subtle">⏱️ {{ r.duration }} • {{ r.questions }}</span>
+                        </div>
+                        <p style="margin: 0; font-size: 0.92rem; color: var(--text-secondary); line-height: 1.6;">
+                            {{ r.desc }}
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- APTITUDE & CODING SYLLABUS -->
+    {% if company.aptitude_topics or company.coding_topics %}
+        <div class="card" style="margin-bottom: 28px;">
+            <div class="card-header">
+                <div class="card-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                    <span>{{ company.name }} Specific Preparation Syllabus</span>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <!-- Aptitude Topics -->
+                <div>
+                    <h4 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                        📝 Aptitude Topics Tested
+                    </h4>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        {% for at in company.aptitude_topics %}
+                            <div class="syllabus-tag">
+                                • {{ at }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div style="margin-top: 14px;">
+                        <a href="{% url 'aptitude' %}" class="btn btn-outline btn-sm">Take Timed Aptitude Practice →</a>
+                    </div>
+                </div>
+
+                <!-- Coding Topics -->
+                <div>
+                    <h4 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                        💻 Coding & Technical Topics
+                    </h4>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        {% for ct in company.coding_topics %}
+                            <div class="syllabus-tag">
+                                • {{ ct }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div style="margin-top: 14px;">
+                        <a href="{% url 'coding' %}" class="btn btn-primary btn-sm">Solve Coding Challenges →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- TECHNICAL INTERVIEW QUESTIONS -->
+    {% if company.technical_questions %}
+        <div class="card" style="margin-bottom: 28px;">
+            <div class="card-header">
+                <div class="card-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                    <span>Technical Interview Questions with Model Answers</span>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+                {% for tq in company.technical_questions %}
+                    <details style="background: var(--bg-subtle); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                        <summary style="font-weight: 700; cursor: pointer; color: var(--text-primary); display: flex; justify-content: space-between; align-items: center;">
+                            <span>Q{{ forloop.counter }}: {{ tq.question }}</span>
+                            <span class="badge badge-primary">{{ tq.topic }}</span>
+                        </summary>
+                        <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-color); font-size: 0.92rem; color: var(--text-secondary); line-height: 1.6;">
+                            <strong style="color: var(--text-primary);">Model Answer:</strong>
+                            <p style="margin-top: 6px; margin-bottom: 0;">{{ tq.answer }}</p>
+                        </div>
+                    </details>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- PREVIOUS PLACEMENT QUESTIONS ARCHIVE -->
+    {% if company.previous_questions %}
+        <div class="card" style="margin-bottom: 28px;">
+            <div class="card-header">
+                <div class="card-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                    <span>Past Placement Drive Questions Archive</span>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                {% for pq in company.previous_questions %}
+                    <details style="background: var(--bg-subtle); padding: 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                        <summary style="font-weight: 600; cursor: pointer; color: var(--text-primary); display: flex; justify-content: space-between; align-items: center;">
+                            <span>{{ pq.question }}</span>
+                            <span class="badge badge-subtle">{{ pq.type }}</span>
+                        </summary>
+                        <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-color); font-size: 0.88rem; color: var(--text-secondary);">
+                            <strong>Strategy / Answer:</strong> {{ pq.answer }}
+                        </div>
+                    </details>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- HR INTERVIEW QUESTIONS -->
+    {% if company.hr_questions %}
+        <div class="card" style="margin-bottom: 28px;">
+            <div class="card-header">
+                <div class="card-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <span>HR Behavioral Questions & STAR Method Answers</span>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+                {% for hq in company.hr_questions %}
+                    <div style="background: var(--bg-subtle); padding: 16px; border-radius: var(--radius-md); border-left: 4px solid #10b981;">
+                        <strong style="font-size: 1.05rem; color: var(--text-primary); display: block; margin-bottom: 8px;">
+                            {{ hq.question }}
+                        </strong>
+                        <div style="background: rgba(16, 185, 129, 0.08); padding: 8px 12px; border-radius: var(--radius-sm); font-size: 0.85rem; color: #10b981; margin-bottom: 10px;">
+                            💡 <strong>Interview Strategy:</strong> {{ hq.tip }}
+                        </div>
+                        <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6;">
+                            <strong style="color: var(--text-primary);">Sample STAR Response:</strong>
+                            <p style="margin-top: 4px; margin-bottom: 0;">"{{ hq.model_answer }}"</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- 4-WEEK PREPARATION ROADMAP -->
+    {% if company.roadmap %}
+        <div class="card" style="margin-bottom: 28px;">
+            <div class="card-header">
+                <div class="card-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                    <span>4-Week Step-by-Step Preparation Roadmap for {{ company.name }}</span>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+                {% for step in company.roadmap %}
+                    <div class="week-card">
+                        <strong style="font-size: 1.1rem; color: var(--text-primary); display: block; margin-bottom: 8px;">
+                            {{ step.title }}
+                        </strong>
+                        <ul style="margin: 0; padding-left: 20px; font-size: 0.92rem; color: var(--text-secondary); line-height: 1.7;">
+                            {% for task in step.tasks %}
+                                <li>{{ task }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- INSIDER INTERVIEW TIPS -->
+    {% if company.interview_tips %}
+        <div class="card" style="margin-bottom: 28px; background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.3);">
+            <div class="card-header">
+                <div class="card-title" style="color: var(--success);">
+                    💡 Expert Interview Tips for {{ company.name }}
+                </div>
+            </div>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--text-primary); line-height: 1.7;">
+                {{ company.interview_tips }}
+            </p>
+        </div>
+    {% endif %}
+
+    <!-- LAUNCH MOCK INTERVIEW CALLOUT -->
+    <div style="text-align: center; margin: 36px 0;">
+        <form method="POST" action="{% url 'interview' %}" style="display: inline-block;">
+            {% csrf_token %}
+            <input type="hidden" name="company" value="{{ company.name }}">
+            <input type="hidden" name="role" value="Software Engineer">
+            <input type="hidden" name="experience" value="Fresher">
+            <input type="hidden" name="interview_type" value="Technical">
+            <button type="submit" class="btn btn-primary btn-lg">
+                🎙️ Launch AI Mock Interview Tailored for {{ company.name }} →
+            </button>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

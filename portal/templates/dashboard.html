@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Dashboard – CareerVerse AI{% endblock %}
+{% block breadcrumb %}Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+
+    <!-- WELCOME BANNER -->
+    <div class="card" style="background: linear-gradient(135deg, rgba(79, 70, 229, 0.12) 0%, rgba(139, 92, 246, 0.08) 100%); border-color: rgba(99, 102, 241, 0.3); margin-bottom: 28px; padding: 28px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+            <div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                    <span class="badge badge-primary">🎓 Placement Cohort 2026</span>
+                    <span class="badge" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4); font-weight: 700;">
+                        🔥 {{ current_streak }}-Day Streak
+                    </span>
+                    <span class="badge badge-success">Active Candidate</span>
+                </div>
+                <h1 style="font-size: 2rem; margin-bottom: 8px;">
+                    Welcome back, {{ user.first_name|default:user.username }}! 👋
+                </h1>
+                <p style="margin: 0; font-size: 1.05rem;">
+                    {{ profile.college|default:"University Student" }} • {{ profile.department|default:"Computer Science & Engineering" }}
+                </p>
+            </div>
+
+            <!-- READINESS GAUGE -->
+            <div style="text-align: right; background: var(--bg-surface); padding: 18px 24px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
+                <div style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;">
+                    Placement Readiness
+                </div>
+                <div style="display: flex; align-items: baseline; gap: 6px; justify-content: flex-end;">
+                    <span style="font-size: 2.5rem; font-weight: 800; color: var(--primary);">{{ readiness_score }}%</span>
+                </div>
+                <div style="width: 140px; height: 6px; background: var(--bg-subtle); border-radius: 10px; overflow: hidden; margin-top: 6px;">
+                    <div style="width: {{ readiness_score }}%; height: 100%; background: var(--primary-gradient);"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATS OVERVIEW -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div>
+                <div class="stat-label">Aptitude Accuracy</div>
+                <div class="stat-value">{{ avg_accuracy }}%</div>
+                <div class="stat-subtext">{{ total_quizzes }} test(s) completed</div>
+            </div>
+            <div class="stat-icon indigo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div>
+                <div class="stat-label">Coding Solved</div>
+                <div class="stat-value">{{ solved_problems_count }} / {{ total_problems }}</div>
+                <div class="stat-subtext">Python, SQL & DSA</div>
+            </div>
+            <div class="stat-icon emerald">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div>
+                <div class="stat-label">Mock Interviews</div>
+                <div class="stat-value">{{ interview_count }}</div>
+                <div class="stat-subtext">AI-evaluated sessions</div>
+            </div>
+            <div class="stat-icon amber">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path></svg>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div>
+                <div class="stat-label">Profile Strength</div>
+                <div class="stat-value">{{ profile_comp }}%</div>
+                <div class="stat-subtext"><a href="{% url 'profile' %}">Complete details →</a></div>
+            </div>
+            <div class="stat-icon cyan">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- DAILY LEARNING GOALS BAR (FEATURE 2) -->
+    <div class="card" style="margin-bottom: 24px; padding: 18px 22px; background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(16, 185, 129, 0.05) 100%);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 1.25rem;">🎯</span>
+                <div>
+                    <strong style="color: var(--text-primary); font-size: 1rem;">Daily Learning Target: {{ daily_stats.percent }}% Completed Today</strong>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                        Coding: {{ daily_stats.coding.actual }}/{{ daily_stats.coding.target }} • Aptitude: {{ daily_stats.aptitude.actual }}/{{ daily_stats.aptitude.target }} • CS Topics: {{ daily_stats.topics.actual }}/{{ daily_stats.topics.target }} • Interviews: {{ daily_stats.interviews.actual }}/{{ daily_stats.interviews.target }}
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 8px;">
+                <a href="{% url 'student_progress' %}" class="btn btn-primary btn-sm">
+                    📈 Full Progress & Analytics →
+                </a>
+            </div>
+        </div>
+
+        <div style="height: 6px; background: var(--bg-surface); border-radius: 10px; overflow: hidden;">
+            <div style="width: {{ daily_stats.percent }}%; height: 100%; background: var(--primary-gradient);"></div>
+        </div>
+    </div>
+
+    <!-- MAIN TWO-COLUMN WORKSPACE -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 28px;">
+        
+        <!-- LEFT: RECOMMENDED PATH & QUICK ACTIONS -->
+        <div>
+            <!-- QUICK ACTIONS -->
+            <div class="card" style="margin-bottom: 24px;">
+                <div class="card-header">
+                    <div class="card-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                        <span>Quick Action Shortcuts</span>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;">
+                    <a href="{% url 'aptitude' %}" class="card" style="padding: 16px; text-decoration: none; border-left: 4px solid var(--primary);">
+                        <strong style="color: var(--text-primary); display: block; margin-bottom: 4px;">📝 Timed Aptitude Quiz</strong>
+                        <span style="font-size: 0.85rem; color: var(--text-secondary);">10 timed questions with live score</span>
+                    </a>
+
+                    <a href="{% url 'coding' %}" class="card" style="padding: 16px; text-decoration: none; border-left: 4px solid var(--success);">
+                        <strong style="color: var(--text-primary); display: block; margin-bottom: 4px;">💻 Code Workbench</strong>
+                        <span style="font-size: 0.85rem; color: var(--text-secondary);">Solve Python & SQL challenges</span>
+                    </a>
+
+                    <a href="{% url 'interview' %}" class="card" style="padding: 16px; text-decoration: none; border-left: 4px solid var(--warning);">
+                        <strong style="color: var(--text-primary); display: block; margin-bottom: 4px;">🤖 AI Mock Interview</strong>
+                        <span style="font-size: 0.85rem; color: var(--text-secondary);">Practice voice or text answers</span>
+                    </a>
+
+                    <a href="{% url 'resume' %}" class="card" style="padding: 16px; text-decoration: none; border-left: 4px solid var(--info);">
+                        <strong style="color: var(--text-primary); display: block; margin-bottom: 4px;">📄 Build ATS Resume</strong>
+                        <span style="font-size: 0.85rem; color: var(--text-secondary);">Export crisp PDF in 4 styles</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- RECOMMENDED LEARNING PATH -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                        <span>Recommended Placement Milestones</span>
+                    </div>
+                    <a href="{% url 'career_guidance' %}" class="btn btn-outline btn-sm">Full AI Guidance →</a>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 14px;">
+                    {% for rec in recommendations %}
+                        <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px; background: var(--bg-subtle); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                            <div style="display: flex; align-items: center; gap: 14px;">
+                                <span class="badge badge-primary">{{ rec.category }}</span>
+                                <div>
+                                    <div style="font-weight: 700; color: var(--text-primary); font-size: 0.95rem;">{{ rec.title }}</div>
+                                    <div style="font-size: 0.82rem; color: var(--text-muted);">{{ rec.desc }}</div>
+                                </div>
+                            </div>
+                            <a href="{{ rec.link }}" class="btn btn-primary btn-sm">Start →</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: TOP COMPANIES & RECENT ATTEMPTS -->
+        <div>
+            <!-- TARGET RECRUITERS -->
+            <div class="card" style="margin-bottom: 24px;">
+                <div class="card-header">
+                    <div class="card-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                        <span>Top Recruiters</span>
+                    </div>
+                    <a href="{% url 'placement' %}" style="font-size: 0.82rem;">View All →</a>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    {% for comp in top_companies %}
+                        <a href="{% url 'company_detail' comp.slug %}" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: var(--radius-sm); text-decoration: none; border: 1px solid var(--border-color); background: var(--bg-subtle);">
+                            <div>
+                                <strong style="color: var(--text-primary); font-size: 0.9rem;">{{ comp.name }}</strong>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">{{ comp.package_range }}</div>
+                            </div>
+                            <span class="badge badge-subtle">Cutoff: {{ comp.eligibility_cgpa }} CGPA</span>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- RECENT TEST ATTEMPTS -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                        <span>Recent Test History</span>
+                    </div>
+                </div>
+
+                {% if recent_attempts %}
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        {% for att in recent_attempts %}
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border-color); font-size: 0.85rem;">
+                                <div>
+                                    <div style="font-weight: 600; color: var(--text-primary);">{{ att.category }}</div>
+                                    <div style="color: var(--text-muted); font-size: 0.75rem;">{{ att.created_at|date:"M d, H:i" }}</div>
+                                </div>
+                                <span class="badge {% if att.accuracy >= 70 %}badge-success{% else %}badge-warning{% endif %}">
+                                    {{ att.score }}/{{ att.total_questions }} ({{ att.accuracy }}%)
+                                </span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p style="font-size: 0.85rem; color: var(--text-muted); text-align: center; margin: 16px 0;">
+                        No quiz attempts recorded yet.
+                    </p>
+                    <a href="{% url 'aptitude' %}" class="btn btn-outline btn-sm btn-block">Take Your First Quiz</a>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

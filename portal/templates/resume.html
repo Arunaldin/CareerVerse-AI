@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+
+{% block title %}Resume Builder & ATS Optimizer – CareerVerse AI{% endblock %}
+{% block breadcrumb %}Resume Builder{% endblock %}
+
+{% block content %}
+<div class="resume-container">
+
+    <!-- PAGE HEADER -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+        <div>
+            <span class="badge badge-primary">ATS-Friendly Resume Studio</span>
+            <h1 style="font-size: 2rem; margin-top: 6px;">Create Your Professional Resume</h1>
+            <p style="margin: 0;">Fill in your details and watch your resume build in real time. Choose from 4 curated templates.</p>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            {% if profile %}
+                <button type="button" class="btn btn-outline" id="sync-profile-btn">
+                    ⚡ Auto-Fill From Profile
+                </button>
+            {% endif %}
+            <button type="button" onclick="window.print()" class="btn btn-primary">
+                📥 Download PDF
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN GRID: EDITOR (LEFT) + LIVE PREVIEW (RIGHT) -->
+    <div class="resume-grid">
+        
+        <!-- LEFT: FORM CONTROLS -->
+        <div class="card no-print">
+            <div class="card-header">
+                <div class="card-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    <span>Resume Content Editor</span>
+                </div>
+            </div>
+
+            <form method="POST" action="{% url 'resume' %}">
+                {% csrf_token %}
+
+                <!-- TEMPLATE SELECTOR -->
+                <div class="form-group">
+                    <label class="form-label">Select Resume Template</label>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 6px 12px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background: var(--bg-subtle);">
+                            <input type="radio" name="template" value="modern" checked>
+                            <span style="font-size: 0.9rem; font-weight: 600;">Modern Tech</span>
+                        </label>
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 6px 12px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background: var(--bg-subtle);">
+                            <input type="radio" name="template" value="executive">
+                            <span style="font-size: 0.9rem; font-weight: 600;">Executive Classic</span>
+                        </label>
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 6px 12px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background: var(--bg-subtle);">
+                            <input type="radio" name="template" value="minimalist">
+                            <span style="font-size: 0.9rem; font-weight: 600;">Minimalist ATS</span>
+                        </label>
+                    </div>
+                </div>
+
+                <hr style="border: none; border-top: 1px solid var(--border-color); margin: 18px 0;">
+
+                <!-- 1. PERSONAL INFORMATION -->
+                <h4 style="margin-bottom: 14px; color: var(--primary);">1. Personal Details</h4>
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" name="name" id="res-name" class="form-control resume-live-input" data-preview="name"
+                           placeholder="e.g. Alex Morgan" value="{{ user.first_name|default:user.username }}" required>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" id="res-email" class="form-control resume-live-input" data-preview="email"
+                               placeholder="alex@example.com" value="{{ user.email }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone</label>
+                        <input type="text" name="phone" id="res-phone" class="form-control resume-live-input" data-preview="phone"
+                               placeholder="+91 9876543210" value="{{ profile.user.student.phone|default:'+91 9876543210' }}">
+                    </div>
+                </div>
+
+                <!-- 2. CAREER OBJECTIVE -->
+                <h4 style="margin-top: 20px; margin-bottom: 14px; color: var(--primary);">2. Career Objective</h4>
+                <div class="form-group">
+                    <textarea name="objective" id="res-objective" class="form-control resume-live-input" data-preview="objective" rows="3"
+                              placeholder="Detail-oriented Computer Science undergraduate with hands-on experience in Python, web development, and algorithmic problem solving. Seeking to contribute as a Software Engineer at a fast-growing tech organization.">Detail-oriented software enthusiast seeking an entry-level engineering role to build robust, scalable solutions.</textarea>
+                </div>
+
+                <!-- 3. EDUCATION -->
+                <h4 style="margin-top: 20px; margin-bottom: 14px; color: var(--primary);">3. Education</h4>
+                <div class="form-group">
+                    <label class="form-label">College, Degree & CGPA</label>
+                    <textarea name="education" id="res-education" class="form-control resume-live-input" data-preview="education" rows="2"
+                              placeholder="B.Tech Computer Science & Engineering | National Institute of Technology (2022 - 2026) | CGPA: 8.5/10">{{ profile.college|default:"University Institute of Technology" }} — {{ profile.department|default:"B.Tech Computer Science" }} (Graduating {{ profile.graduation_year|default:"2026" }}) | CGPA: {{ profile.cgpa|default:"8.50" }}</textarea>
+                </div>
+
+                <!-- 4. TECHNICAL SKILLS -->
+                <h4 style="margin-top: 20px; margin-bottom: 14px; color: var(--primary);">4. Technical Skills</h4>
+                <div class="form-group">
+                    <input type="text" name="skills" id="res-skills" class="form-control resume-live-input" data-preview="skills"
+                           placeholder="Languages: Python, SQL, C++ | Frameworks: Django, React | Tools: Git, Docker, Linux"
+                           value="{{ profile.skills|default:'Python, SQL, HTML/CSS, Git, Problem Solving' }}">
+                </div>
+
+                <!-- 5. KEY PROJECTS -->
+                <h4 style="margin-top: 20px; margin-bottom: 14px; color: var(--primary);">5. Projects</h4>
+                <div class="form-group">
+                    <textarea name="projects" id="res-projects" class="form-control resume-live-input" data-preview="projects" rows="4"
+                              placeholder="• CareerVerse AI: Developed an AI-powered career portal with real-time code runner in Django & SQLite.&#10;• E-Commerce Microservices: Engineered checkout and inventory management with Python & PostgreSQL.">• CareerVerse AI Portal: Built an AI-powered placement platform using Django, SQLite, and OpenAI integration handling mock interviews and coding execution.&#10;• Algorithm Visualizer: Designed an interactive visual tool for sorting and graph traversals.</textarea>
+                </div>
+
+                <!-- 6. EXPERIENCE / INTERNSHIPS -->
+                <h4 style="margin-top: 20px; margin-bottom: 14px; color: var(--primary);">6. Experience & Internships</h4>
+                <div class="form-group">
+                    <textarea name="experience" id="res-experience" class="form-control resume-live-input" data-preview="experience" rows="3"
+                              placeholder="Software Development Intern | TechCorp (Jun 2025 - Aug 2025)&#10;• Optimized database queries resulting in a 25% latency decrease.&#10;• Collaborated with Agile team to ship 4 client-facing API endpoints.">Software Engineering Intern | Tech Innovations (Summer 2025)&#10;• Developed automated test suites improving regression coverage by 30%.&#10;• Refactored backend query filters to optimize API response times.</textarea>
+                </div>
+
+                <!-- 7. CERTIFICATIONS -->
+                <h4 style="margin-top: 20px; margin-bottom: 14px; color: var(--primary);">7. Certifications & Honors</h4>
+                <div class="form-group">
+                    <input type="text" name="certifications" id="res-certs" class="form-control resume-live-input" data-preview="certifications"
+                           placeholder="AWS Certified Cloud Practitioner, HackerRank 5-Star Problem Solving"
+                           value="HackerRank 5-Star Python, AWS Certified Cloud Practitioner">
+                </div>
+
+                <div style="display: flex; gap: 12px; margin-top: 24px;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">
+                        Save & View Full Resume
+                    </button>
+                    <button type="button" onclick="window.print()" class="btn btn-outline" style="flex: 1;">
+                        🖨️ Quick Print
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- RIGHT: LIVE RENDERED PREVIEW SHEET -->
+        <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;" class="no-print">
+                <span style="font-weight: 700; font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase;">Real-Time ATS Preview</span>
+                <span class="badge badge-success">A4 Format Ready</span>
+            </div>
+
+            <div class="resume-preview-sheet" id="resume-preview-sheet">
+                <!-- HEADER -->
+                <div style="border-bottom: 2px solid #2563eb; padding-bottom: 16px; margin-bottom: 20px;">
+                    <h1 id="preview-name" style="color: #1e293b; font-size: 2rem; font-weight: 800; margin: 0 0 6px;">
+                        {{ user.first_name|default:user.username }}
+                    </h1>
+                    <div style="display: flex; gap: 16px; flex-wrap: wrap; color: #64748b; font-size: 0.9rem;">
+                        <span>📧 <span id="preview-email">{{ user.email|default:"student@example.com" }}</span></span>
+                        <span>📱 <span id="preview-phone">{{ profile.user.student.phone|default:"+91 9876543210" }}</span></span>
+                        <span>🌐 LinkedIn / GitHub</span>
+                    </div>
+                </div>
+
+                <!-- OBJECTIVE -->
+                <div style="margin-bottom: 18px;">
+                    <h3 style="color: #2563eb; font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 6px;">
+                        Professional Summary
+                    </h3>
+                    <p id="preview-objective" style="font-size: 0.92rem; color: #334155; line-height: 1.6; margin: 0;">
+                        Detail-oriented software enthusiast seeking an entry-level engineering role to build robust, scalable solutions.
+                    </p>
+                </div>
+
+                <!-- EDUCATION -->
+                <div style="margin-bottom: 18px;">
+                    <h3 style="color: #2563eb; font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 6px;">
+                        Education
+                    </h3>
+                    <p id="preview-education" style="font-size: 0.92rem; color: #334155; line-height: 1.6; margin: 0; white-space: pre-line;">
+                        {{ profile.college|default:"University Institute of Technology" }} — {{ profile.department|default:"B.Tech Computer Science" }} (Graduating {{ profile.graduation_year|default:"2026" }}) | CGPA: {{ profile.cgpa|default:"8.50" }}
+                    </p>
+                </div>
+
+                <!-- SKILLS -->
+                <div style="margin-bottom: 18px;">
+                    <h3 style="color: #2563eb; font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 6px;">
+                        Technical Skills
+                    </h3>
+                    <p id="preview-skills" style="font-size: 0.92rem; color: #334155; line-height: 1.6; margin: 0;">
+                        {{ profile.skills|default:"Python, SQL, HTML/CSS, Git, Problem Solving" }}
+                    </p>
+                </div>
+
+                <!-- PROJECTS -->
+                <div style="margin-bottom: 18px;">
+                    <h3 style="color: #2563eb; font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 6px;">
+                        Key Projects
+                    </h3>
+                    <p id="preview-projects" style="font-size: 0.92rem; color: #334155; line-height: 1.6; margin: 0; white-space: pre-line;">
+• CareerVerse AI Portal: Built an AI-powered placement platform using Django, SQLite, and OpenAI integration handling mock interviews and coding execution.
+• Algorithm Visualizer: Designed an interactive visual tool for sorting and graph traversals.
+                    </p>
+                </div>
+
+                <!-- EXPERIENCE -->
+                <div style="margin-bottom: 18px;">
+                    <h3 style="color: #2563eb; font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 6px;">
+                        Experience & Internships
+                    </h3>
+                    <p id="preview-experience" style="font-size: 0.92rem; color: #334155; line-height: 1.6; margin: 0; white-space: pre-line;">
+Software Engineering Intern | Tech Innovations (Summer 2025)
+• Developed automated test suites improving regression coverage by 30%.
+• Refactored backend query filters to optimize API response times.
+                    </p>
+                </div>
+
+                <!-- CERTIFICATIONS -->
+                <div>
+                    <h3 style="color: #2563eb; font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 6px;">
+                        Certifications & Honors
+                    </h3>
+                    <p id="preview-certifications" style="font-size: 0.92rem; color: #334155; line-height: 1.6; margin: 0;">
+                        HackerRank 5-Star Python, AWS Certified Cloud Practitioner
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const syncBtn = document.getElementById('sync-profile-btn');
+    if (syncBtn) {
+        syncBtn.addEventListener('click', () => {
+            document.getElementById('res-name').value = "{{ user.first_name|default:user.username }}";
+            document.getElementById('res-email').value = "{{ user.email }}";
+            document.getElementById('res-skills').value = "{{ profile.skills|default:'' }}";
+            document.getElementById('res-education').value = "{{ profile.college|default:'' }} — {{ profile.department|default:'' }} (Graduating {{ profile.graduation_year|default:'2026' }}) | CGPA: {{ profile.cgpa|default:'8.50' }}";
+            // Trigger preview refresh
+            document.querySelectorAll('.resume-live-input').forEach(i => i.dispatchEvent(new Event('input')));
+        });
+    }
+</script>
+{% endblock %}
